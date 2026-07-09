@@ -6,9 +6,19 @@
    aria-expanded management, reduced-motion support
    ============================================ */
 
+/* --- Prevent unwanted scroll restoration on mobile ---
+   Browsers default to restoring the previous scroll position on revisit.
+   With CSS scroll-behavior:smooth (now removed), this caused a visible
+   auto-scroll animation. We force manual restoration and reset to top. */
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
 document.addEventListener('DOMContentLoaded', () => {
   initTypewriter();
   initScrollHandlers();
+  initSmoothScroll();
   initMobileNav();
   initFadeInObserver();
   initSkillBars();
@@ -142,6 +152,28 @@ function initScrollHandlers() {
   }
 }
 
+/* --- Smooth Scroll for Anchor Links ---
+   Replaces CSS scroll-behavior:smooth (removed to prevent
+   unwanted auto-scroll from browser scroll restoration).
+   Only applies to in-page hash links, not external URLs. */
+function initSmoothScroll() {
+  const navOffset = 70;
+
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href === '#' || !href) return;
+
+      const target = document.querySelector(href);
+      if (!target) return;
+
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - navOffset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+}
+
 /* --- Mobile Nav Toggle (CSS class based + aria) --- */
 function initMobileNav() {
   const toggle = document.getElementById('navToggle');
@@ -171,13 +203,17 @@ function initMobileNav() {
   });
 }
 
-/* --- Fade-in on scroll (IntersectionObserver) --- */
+/* --- Fade-in on scroll (IntersectionObserver) ---
+   HCI principles applied:
+   - Initial viewport elements stay visible (no flash of invisible content)
+   - Reduced-motion users skip animation entirely
+   - Elements below fold get a subtle, fast fade-in */
 function initFadeInObserver() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
   const targets = document.querySelectorAll(
     '.glass-card, .section-title, .about-intro, .timeline-item, .project-featured, .contact-intro'
   );
-
-  targets.forEach(el => el.classList.add('fade-in'));
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -188,10 +224,17 @@ function initFadeInObserver() {
     });
   }, {
     threshold: 0.1,
-    rootMargin: '0px 0px -40px 0px'
+    rootMargin: '0px 0px -50px 0px'
   });
 
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  targets.forEach(el => {
+    // Elements already in the initial viewport stay visible — no animation
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) return;
+
+    el.classList.add('fade-in');
+    observer.observe(el);
+  });
 }
 
 /* --- Animate skill bars on scroll --- */

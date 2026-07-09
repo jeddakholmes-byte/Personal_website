@@ -335,38 +335,72 @@
         </div>
       </div>
 
-      <div class="projects-grid">
-        <div class="glass-card project-card">
-          <div class="project-card-visual project-visual-chart">
-            <div class="mini-bars">
-              <div class="mini-bar" style="--h:0.6"></div>
-              <div class="mini-bar" style="--h:0.85"></div>
-              <div class="mini-bar" style="--h:0.45"></div>
-              <div class="mini-bar" style="--h:0.9"></div>
-              <div class="mini-bar" style="--h:0.7"></div>
-              <div class="mini-bar" style="--h:0.55"></div>
+      <div class="project-featured glass-card project-featured-reverse">
+        <div class="project-featured-badge">精选项目</div>
+        <div class="project-featured-content">
+          <div class="project-featured-visual">
+            <div class="report-preview">
+              <div class="report-preview-header">
+                <span class="rp-header-title">学生能力画像</span>
+                <span class="rp-header-tag">P5 · 数学</span>
+              </div>
+              <div class="report-preview-body">
+                <div class="rp-radar">
+                  <svg viewBox="0 0 120 120" class="radar-svg">
+                    <polygon points="60,15 105,45 88,95 32,95 15,45" fill="none" stroke="rgba(129,140,248,0.1)" stroke-width="1"/>
+                    <polygon points="60,30 90,50 78,85 42,85 30,50" fill="none" stroke="rgba(129,140,248,0.07)" stroke-width="1"/>
+                    <polygon points="60,22 98,47 84,88 40,84 24,50" fill="rgba(129,140,248,0.1)" stroke="rgba(129,140,248,0.45)" stroke-width="1.5"/>
+                    <circle cx="60" cy="22" r="2.5" fill="#818cf8"/>
+                    <circle cx="98" cy="47" r="2.5" fill="#818cf8"/>
+                    <circle cx="84" cy="88" r="2.5" fill="#818cf8"/>
+                    <circle cx="40" cy="84" r="2.5" fill="#818cf8"/>
+                    <circle cx="24" cy="50" r="2.5" fill="#818cf8"/>
+                  </svg>
+                </div>
+                <div class="rp-stats">
+                  <div class="rp-stat"><span class="rp-stat-num">92</span><span class="rp-stat-label">排名</span></div>
+                  <div class="rp-stat"><span class="rp-stat-num">85<span class="rp-stat-unit">%</span></span><span class="rp-stat-label">百分位</span></div>
+                  <div class="rp-stat"><span class="rp-stat-num rp-stat-up">↗</span><span class="rp-stat-label">成长趋势</span></div>
+                </div>
+              </div>
+              <p class="rp-label">雷达诊断 · 三阶段趋势 · PDF输出</p>
             </div>
-            <span class="project-visual-label">数据流水线</span>
           </div>
-          <div class="project-card-body">
-            <div class="project-card-header">
-              <span class="project-num">02</span>
-              <h3>学生评估报告生成系统</h3>
+          <div class="project-featured-text">
+            <div class="project-featured-header">
+              <span class="project-featured-num">02</span>
+              <div>
+                <h3>Practifly AI — 学生评估报告生成系统</h3>
+                <p class="project-subtitle">K-12 教育评估 · 自动化报告流水线</p>
+              </div>
             </div>
-            <p>面向区域数学竞赛和K-12学习评估，搭建数据导入、统计计算、能力画像、可视化报告和HTML转PDF自动化渲染流程。</p>
+            <p>面向香港 K-12 教育评估场景，从 Excel 原始数据到个性化 HTML 报告再到 PDF，全流程自动化。系统为每位学生生成包含成绩分析、能力画像、知识点诊断和学习建议的个性化报告。</p>
             <div class="project-tags">
-              <span>Python</span><span>Pandas</span><span>Chart.js</span><span>Selenium</span>
+              <span>Python</span><span>Pandas</span><span>Chart.js</span><span>Selenium</span><span>OpenCC</span>
             </div>
-            <div class="project-metrics">
-              <div class="project-metric"><strong>251</strong>所学校</div>
-              <div class="project-metric"><strong>19.8K+</strong>名学生</div>
-              <div class="project-metric"><strong>全自动</strong>渲染</div>
+            <div class="project-features">
+              <span>✓ 三阶段成绩成长趋势分析</span>
+              <span>✓ 知识点掌握雷达图诊断</span>
+              <span>✓ 个性化学习建议生成</span>
+              <span>✓ Chart.js 可视化图表嵌入</span>
+              <span>✓ Selenium 无头浏览器 PDF 渲染</span>
+              <span>✓ 繁简体自动转换</span>
             </div>
-            <a href="https://github.com/jeddakholmes-byte/Practifly-AI-" target="_blank" class="btn btn-outline" rel="noopener">
-              查看仓库 →
-            </a>
+            <div class="project-links">
+              <a href="https://jeddakholmes-byte.github.io/Practifly-AI-/" target="_blank" class="btn btn-primary" rel="noopener">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                在线体验
+              </a>
+              <a href="https://github.com/jeddakholmes-byte/Practifly-AI-" target="_blank" class="btn btn-outline" rel="noopener">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                查看仓库
+              </a>
+            </div>
           </div>
         </div>
+      </div>
+
+      <div class="projects-grid">
         <div class="glass-card project-card">
           <div class="project-card-visual project-visual-doc">
             <div class="mini-doc">
