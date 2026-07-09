@@ -32,7 +32,7 @@ git push origin main
 if [ $? -eq 0 ]; then
   echo ""
   echo "🚀 推送成功！"
-  echo "   网站地址: https://jeddakholmes-byte.github.io"
+  echo "   网站地址: https://jeddakholmes-byte.github.io/Personal_website"
   echo "   GitHub Pages 会在 1-2 分钟内更新"
 else
   echo ""

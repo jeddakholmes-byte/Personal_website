@@ -4,7 +4,7 @@
 
 纯静态个人学术主页，零框架依赖，部署于 GitHub Pages。
 
-🔗 **线上地址**：[jeddakholmes-byte.github.io](https://jeddakholmes-byte.github.io)
+🔗 **线上地址**：[jeddakholmes-byte.github.io/Personal_website](https://jeddakholmes-byte.github.io/Personal_website)
 
 ---
 
@@ -70,9 +70,9 @@ python3 -m http.server 8000
 
 本站通过 GitHub Pages 自动部署：
 
-1. 仓库地址：`github.com/jeddakholmes-byte/jeddakholmes-byte.github.io`
-2. 推送 `main` 分支后，GitHub Actions 自动构建部署
-3. 部署完成后访问：`https://jeddakholmes-byte.github.io`
+1. 仓库地址：`github.com/jeddakholmes-byte/Personal_website`
+2. 推送 `main` 分支后，在仓库 Settings → Pages 中启用（Source: Deploy from a branch, Branch: main / root）
+3. 部署完成后访问：`https://jeddakholmes-byte.github.io/Personal_website`
 
 ## 已发表论文
 
