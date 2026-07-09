@@ -250,69 +250,36 @@ body::before {
 
 .hero-avatar {
   margin: 0 auto 32px;
-  position: relative;
-  width: 160px;
-  height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatar-ring {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.avatar-ring-outer {
-  width: 160px;
-  height: 160px;
-  border: 1px solid rgba(129, 140, 248, 0.1);
-  animation: spin 30s linear infinite;
-}
-
-.avatar-ring-outer::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: 50%;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
-  transform: translateX(-50%);
-}
-
-.avatar-ring-mid {
-  width: 128px;
-  height: 128px;
-  border: 1px dashed rgba(45, 212, 191, 0.12);
-  animation: spin 20s linear infinite reverse;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 .avatar-placeholder {
-  width: 96px;
-  height: 96px;
+  width: 108px;
+  height: 108px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
-  color: var(--bg-primary);
+  background: linear-gradient(145deg, var(--bg-tertiary), var(--bg-secondary));
+  color: var(--accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-serif);
-  font-size: 1.8rem;
-  font-weight: 700;
-  box-shadow: 0 0 60px var(--accent-glow), inset 0 0 20px rgba(0, 0, 0, 0.1);
-  border: 2px solid rgba(129, 140, 248, 0.25);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 2.4rem;
+  font-weight: 600;
+  box-shadow:
+    0 0 50px rgba(129, 140, 248, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 0 30px rgba(129, 140, 248, 0.03);
+  border: 1px solid rgba(129, 140, 248, 0.18);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
   position: relative;
-  z-index: 1;
+}
+
+.avatar-placeholder::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1px solid rgba(129, 140, 248, 0.06);
+  pointer-events: none;
 }
 
 .avatar-placeholder:hover {
@@ -430,6 +397,16 @@ body::before {
   width: 1px;
   height: 28px;
   background: var(--glass-border);
+}
+
+/* Hero Bio */
+.hero-bio {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  max-width: 520px;
+  margin: 0 auto 32px;
+  text-align: center;
 }
 
 .hero-links {
@@ -1336,6 +1313,29 @@ body::before {
   align-self: flex-start;
 }
 
+/* Project Links (demo + repo) */
+.project-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-self: flex-start;
+}
+
+/* Project Status Badge */
+.project-status {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--glass-border);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  align-self: flex-start;
+  letter-spacing: 0.02em;
+}
+
 /* --- Skills --- */
 .skills-grid {
   display: grid;
@@ -1570,10 +1570,8 @@ button:focus-visible {
   .hero-tagline { font-size: 0.95rem; }
   .hero-subtitle { font-size: 0.78rem; }
 
-  .hero-avatar { width: 140px; height: 140px; }
-  .avatar-ring-outer { width: 140px; height: 140px; }
-  .avatar-ring-mid { width: 112px; height: 112px; }
-  .avatar-placeholder { width: 84px; height: 84px; font-size: 1.5rem; }
+  .hero-avatar { margin-bottom: 24px; }
+  .avatar-placeholder { width: 92px; height: 92px; font-size: 2rem; }
 
   .hero-keyword { font-size: 0.68rem; padding: 3px 11px; }
 
@@ -1581,6 +1579,8 @@ button:focus-visible {
   .hero-stat { padding: 0 14px; }
   .hero-stat-num { font-size: 1.3rem; }
   .hero-stat-label { font-size: 0.62rem; }
+
+  .hero-bio { font-size: 0.8rem; margin-bottom: 24px; }
 
   .about-grid,
   .research-grid,
@@ -1660,6 +1660,8 @@ button:focus-visible {
   .hero-stat-sep { display: none; }
   .hero-stat-num { font-size: 1.15rem; }
 
+  .hero-bio { font-size: 0.75rem; }
+
   .skill-item {
     flex-wrap: wrap;
   }
@@ -1679,11 +1681,6 @@ button:focus-visible {
   .cursor-glow,
   .bg-grid {
     display: none !important;
-  }
-
-  .avatar-ring-outer,
-  .avatar-ring-mid {
-    animation: none !important;
   }
 
   .fade-in {
