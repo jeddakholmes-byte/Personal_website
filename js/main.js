@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initFadeInObserver();
   initSkillBars();
   initAbstractToggle();
-  initCiteFormatDropdown();
   initCursorGlow();
   initCardSpotlight();
 });
@@ -396,94 +395,4 @@ function initTheme() {
 
   // On load: theme already set by inline <script>. Only sync icon, no re-apply.
   syncIcon();
-}
-
-/* --- Citation Format Dropdown Toggle (toggle only) ---
-   switchCiteFormat() and copyCitation() are called via onclick in HTML   */
-function initCiteFormatDropdown() {
-  const btn = document.getElementById('citeFormatBtn');
-  const dd = document.getElementById('citeFormatDropdown');
-  if (!btn || !dd) return;
-
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const open = dd.style.display === 'block';
-    dd.style.display = open ? 'none' : 'block';
-    btn.setAttribute('aria-expanded', String(!open));
-  });
-
-  // Close on outside click
-  document.addEventListener('click', () => {
-    if (dd.style.display === 'block') {
-      dd.style.display = 'none';
-      btn.setAttribute('aria-expanded', 'false');
-    }
-  });
-}
-
-/* --- Global: switch citation format (called by onclick on <li>) --- */
-function switchCiteFormat(format) {
-  const citeText = document.getElementById('citeText');
-  const label = document.getElementById('citeFormatLabel');
-  const dd = document.getElementById('citeFormatDropdown');
-  const btn = document.getElementById('citeFormatBtn');
-
-  const data = {
-    gbt: '李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.',
-    mla: 'Li, Yan, Chengzhe Fu, and Chaowei Qiu. "Factors Influencing Green Transport Mobility in Shenzhen-Hong Kong Cross-Border Commuting: Evidence from the High-Speed Rail \'Flexible Pass\' Policy." 全球ESG创新学报, no. 1, 2026.',
-    apa: 'Li, Y., Fu, C., & Qiu, C. (2026). Factors influencing green transport mobility in Shenzhen-Hong Kong cross-border commuting: Evidence from the high-speed rail "flexible pass" policy. 全球ESG创新学报, (1).'
-  };
-  const labels = { gbt: 'GB/T 7714', mla: 'MLA (9th ed.)', apa: 'APA (7th ed.)' };
-
-  if (citeText) citeText.textContent = data[format];
-  if (label) label.textContent = labels[format];
-
-  // Update active marker in dropdown
-  if (dd) {
-    dd.querySelectorAll('.cite-format-option').forEach(opt => {
-      const href = opt.getAttribute('onclick') || '';
-      opt.classList.toggle('active', href.includes("'" + format + "'"));
-    });
-  }
-
-  // Close dropdown
-  if (dd) dd.style.display = 'none';
-  if (btn) btn.setAttribute('aria-expanded', 'false');
-}
-
-/* --- Global: copy citation to clipboard (called by onclick on button) --- */
-function copyCitation() {
-  const citeText = document.getElementById('citeText');
-  const btn = document.getElementById('citeCopyBtn');
-  if (!citeText || !btn) return;
-
-  const span = btn.querySelector('span');
-  const fallback = () => {
-    const ta = document.createElement('textarea');
-    ta.value = citeText.textContent;
-    ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.classList.add('copied');
-    if (span) span.textContent = '已复制';
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      if (span) span.textContent = '复制';
-    }, 1800);
-  };
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(citeText.textContent).then(() => {
-      btn.classList.add('copied');
-      if (span) span.textContent = '已复制';
-      setTimeout(() => {
-        btn.classList.remove('copied');
-        if (span) span.textContent = '复制';
-      }, 1800);
-    }).catch(fallback);
-  } else {
-    fallback();
-  }
 }

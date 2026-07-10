@@ -62,7 +62,9 @@
         <div class="hero-left">
           <div class="hero-profile">
             <div class="hero-avatar">
-              <div class="avatar-placeholder">邱</div>
+              <!-- 替换为你的照片：上传到 GitHub 仓库后，将 src 改为 https://raw.githubusercontent.com/jeddakholmes-byte/.../main/photo.jpg -->
+              <img src="" alt="邱超伟" class="avatar-img" id="avatarImg" onerror="this.style.display='none';document.getElementById('avatarFallback').style.display='flex'">
+              <div class="avatar-fallback" id="avatarFallback" style="display:flex">邱</div>
             </div>
             <div class="hero-name-block">
               <h1 class="hero-name">
@@ -305,13 +307,8 @@
                   <span id="citeFormatLabel">GB/T 7714</span>
                   <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
-                <ul class="cite-format-dropdown" id="citeFormatDropdown" role="listbox" style="display:none">
-                  <li role="option" class="cite-format-option active" onclick="switchCiteFormat('gbt')">GB/T 7714</li>
-                  <li role="option" class="cite-format-option" onclick="switchCiteFormat('mla')">MLA (9th ed.)</li>
-                  <li role="option" class="cite-format-option" onclick="switchCiteFormat('apa')">APA (7th ed.)</li>
-                </ul>
               </div>
-              <button class="cite-copy-btn" id="citeCopyBtn" title="复制引用" onclick="copyCitation()">
+              <button class="cite-copy-btn" id="citeCopyBtn" title="复制引用">
                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
                 <span>复制</span>
               </button>
@@ -652,5 +649,144 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script>
+// ── Citation format dropdown (inline, runs after DOM fully ready) ──
+(function() {
+  var btn   = document.getElementById('citeFormatBtn');
+  var label = document.getElementById('citeFormatLabel');
+  var cite  = document.getElementById('citeText');
+  var copy  = document.getElementById('citeCopyBtn');
+  if (!btn) return;
+
+  var map = {
+    gbt: '李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.',
+    mla: 'Li, Yan, Chengzhe Fu, and Chaowei Qiu. "Factors Influencing Green Transport Mobility in Shenzhen-Hong Kong Cross-Border Commuting: Evidence from the High-Speed Rail \'Flexible Pass\' Policy." 全球ESG创新学报, no. 1, 2026.',
+    apa: 'Li, Y., Fu, C., & Qiu, C. (2026). Factors influencing green transport mobility in Shenzhen-Hong Kong cross-border commuting: Evidence from the high-speed rail "flexible pass" policy. 全球ESG创新学报, (1).'
+  };
+  var labs = { gbt: 'GB/T 7714', mla: 'MLA (9th ed.)', apa: 'APA (7th ed.)' };
+  var current = 'gbt';
+
+  // Build dropdown, append to body
+  var dd = document.createElement('ul');
+  dd.className = 'cite-format-dropdown';
+  dd.style.cssText = 'display:none;position:fixed;z-index:99999;margin:0;padding:4px;list-style:none;border:1px solid var(--line-strong, #c8c0b8);border-radius:8px;background:#fff;box-shadow:0 12px 32px rgba(36,86,111,0.16);';
+  Object.keys(labs).forEach(function(k) {
+    var li = document.createElement('li');
+    li.className = 'cite-format-option' + (k === current ? ' active' : '');
+    li.textContent = labs[k];
+    li.setAttribute('data-fmt', k);
+    li.style.cssText = 'padding:8px 12px;border-radius:4px;font-size:0.76rem;cursor:pointer;white-space:nowrap;';
+    if (k === current) li.style.cssText += 'background:rgba(36,86,111,0.1);color:#24566f;font-weight:700;';
+    dd.appendChild(li);
+  });
+  document.body.appendChild(dd);
+
+  function show() {
+    var r = btn.getBoundingClientRect();
+    dd.style.top  = (r.bottom + 4 + window.pageYOffset) + 'px';
+    dd.style.left = (r.right - 170) + 'px';
+    dd.style.minWidth = Math.max(170, r.width) + 'px';
+    dd.style.display = 'block';
+    btn.setAttribute('aria-expanded', 'true');
+  }
+
+  function hide() {
+    dd.style.display = 'none';
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function pick(fmt) {
+    current = fmt;
+    if (cite) cite.textContent = map[fmt];
+    if (label) label.textContent = labs[fmt];
+    var opts = dd.querySelectorAll('.cite-format-option');
+    for (var i = 0; i < opts.length; i++) {
+      var o = opts[i];
+      var isActive = o.getAttribute('data-fmt') === fmt;
+      o.classList.toggle('active', isActive);
+      if (isActive) {
+        o.style.background = 'rgba(36,86,111,0.1)';
+        o.style.color = '#24566f';
+        o.style.fontWeight = '700';
+      } else {
+        o.style.background = '';
+        o.style.color = '';
+        o.style.fontWeight = '';
+      }
+    }
+    hide();
+  }
+
+  // Single click handler
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (dd.style.display === 'block') hide();
+    else show();
+  });
+
+  dd.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var li = e.target.closest('.cite-format-option');
+    if (li) pick(li.getAttribute('data-fmt'));
+  });
+
+  document.addEventListener('click', function() { hide(); });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') hide();
+  });
+
+  window.addEventListener('scroll', function() {
+    if (dd.style.display !== 'block') return;
+    var r = btn.getBoundingClientRect();
+    dd.style.top  = (r.bottom + 4 + window.pageYOffset) + 'px';
+    dd.style.left = (r.right - 170) + 'px';
+  }, { passive: true });
+
+  window.addEventListener('resize', function() {
+    if (dd.style.display !== 'block') return;
+    var r = btn.getBoundingClientRect();
+    dd.style.top  = (r.bottom + 4 + window.pageYOffset) + 'px';
+    dd.style.left = (r.right - 170) + 'px';
+  });
+
+  // Copy button
+  if (copy) {
+    copy.addEventListener('click', function() {
+      var txt = cite ? cite.textContent : '';
+      var span = copy.querySelector('span');
+      var done = function() {
+        copy.classList.add('copied');
+        if (span) span.textContent = '已复制';
+        setTimeout(function() {
+          copy.classList.remove('copied');
+          if (span) span.textContent = '复制';
+        }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done).catch(function() {
+          var ta = document.createElement('textarea');
+          ta.value = txt;
+          ta.style.cssText = 'position:fixed;opacity:0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          done();
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = txt;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      }
+    });
+  }
+})();
+</script>
 </body>
 </html>

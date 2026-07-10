@@ -463,10 +463,10 @@ svg {
 }
 
 .hero-avatar {
-  width: 88px;
-  min-height: 88px;
-  height: 88px;
-  border-radius: 50%;
+  width: 100px;
+  min-height: 130px;
+  height: 130px;
+  border-radius: var(--radius);
   border: 2px solid var(--line-strong);
   background: var(--paper);
   box-shadow: 0 12px 32px rgba(36, 86, 111, 0.12);
@@ -478,25 +478,24 @@ svg {
   flex-shrink: 0;
 }
 
-.hero-avatar::before,
-.hero-avatar::after {
-  display: none;
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.avatar-placeholder {
-  width: 62px;
-  height: 62px;
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--line-strong);
-  border-radius: 50%;
   background: var(--paper);
   color: var(--blue);
   font-family: var(--font-serif);
-  font-size: 1.9rem;
+  font-size: 2.4rem;
   font-weight: 700;
-  box-shadow: 0 12px 30px rgba(36, 86, 111, 0.08);
 }
 
 /* ── Profile: avatar + name side by side ── */
@@ -1159,7 +1158,7 @@ svg {
   gap: 8px;
 }
 
-/* ── Format dropdown ── */
+/* ── Format dropdown (rendered at body level via JS) ── */
 .cite-format-select {
   position: relative;
 }
@@ -1186,9 +1185,8 @@ svg {
 }
 
 .cite-format-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
+  position: fixed;
+  z-index: 9999;
   min-width: 170px;
   margin: 0;
   padding: 4px;
@@ -1196,8 +1194,7 @@ svg {
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-sm);
   background: var(--paper);
-  box-shadow: 0 12px 32px rgba(36, 86, 111, 0.14);
-  z-index: 100;
+  box-shadow: 0 12px 32px rgba(36, 86, 111, 0.16);
 }
 
 .cite-format-option {
@@ -1737,14 +1734,12 @@ svg {
 
   .hero-avatar {
     width: 80px;
-    min-height: 80px;
-    height: 80px;
+    min-height: 104px;
+    height: 104px;
   }
 
-  .avatar-placeholder {
-    width: 56px;
-    height: 56px;
-    font-size: 1.7rem;
+  .avatar-fallback {
+    font-size: 2rem;
   }
 
   .about-grid,
