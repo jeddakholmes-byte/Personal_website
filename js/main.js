@@ -7,13 +7,11 @@
    ============================================ */
 
 /* --- Prevent unwanted scroll restoration on mobile ---
-   Browsers default to restoring the previous scroll position on revisit.
-   With CSS scroll-behavior:smooth (now removed), this caused a visible
-   auto-scroll animation. We force manual restoration and reset to top. */
+   Keep hash links usable: only reset restoration behavior, do not force a
+   top scroll when someone opens a specific section directly. */
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
-window.scrollTo(0, 0);
 
 document.addEventListener('DOMContentLoaded', () => {
   initTypewriter();
@@ -31,6 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function initTypewriter() {
   const el = document.getElementById('typewriter');
   if (!el) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    el.textContent = '计算社会科学与公共政策评估';
+    return;
+  }
 
   const phrases = [
     '计算社会科学研究者',
@@ -200,6 +203,12 @@ function initMobileNav() {
     if (e.key === 'Escape' && links.classList.contains('open')) {
       setNav(false);
     }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!links.classList.contains('open')) return;
+    if (links.contains(e.target) || toggle.contains(e.target)) return;
+    setNav(false);
   });
 }
 
