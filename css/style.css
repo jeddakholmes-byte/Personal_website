@@ -898,6 +898,12 @@ svg {
   padding: 0;
 }
 
+.project-card .project-card-visual {
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--line);
+}
+
 .project-card-body {
   padding: 24px;
 }
@@ -1262,6 +1268,10 @@ svg {
     justify-self: stretch;
     min-height: 260px;
     width: 100%;
+  }
+
+  .hero-avatar::after {
+    height: 70px;
   }
 
   .avatar-placeholder {
