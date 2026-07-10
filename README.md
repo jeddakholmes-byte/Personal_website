@@ -1,6 +1,6 @@
 # 邱超伟 Chaowei Qiu - 个人学术主页
 
-这是一个纯静态个人学术主页，适合放在 GitHub Pages 上。页面重点不是“展示很多炫技效果”，而是让访问者快速看清楚：我是谁、研究什么、做过哪些项目、有哪些论文或成果、如何联系我。
+纯静态个人学术主页
 
 线上地址：
 
@@ -8,7 +8,7 @@ https://jeddakholmes-byte.github.io/Personal_website
 
 ## 设计思路
 
-这次页面按学术个人主页来整理，而不是按商业产品页来做。参考了计算社会科学、公共政策、传播与数据科学方向学者主页的常见结构：
+参考计算社会科学、公共政策、传播与数据科学方向学者主页的常见结构：
 
 - 首屏直接呈现姓名、研究身份、关键词和核心经历。
 - 导航保持简短，方便手机和电脑快速跳转。
@@ -81,17 +81,17 @@ python3 -m http.server 8080
 
 `index.html` 中每个内容板块末尾都有一个 HTML 注释标记，作为粘贴锚点：
 
-| 标记 | 位置 |
-|------|------|
-| `<!-- INSERT: education_item -->` | 教育背景 · 最后一条 timeline-item 之后 |
-| `<!-- INSERT: research_card -->` | 研究方向 · 最后一张 research-card 之后 |
-| `<!-- INSERT: publication_card -->` | 发表论文 · 最后一篇 pub-card 之后 |
-| `<!-- INSERT: featured_project -->` | 项目作品 · 最后一个精选项目之后 |
-| `<!-- INSERT: project_card -->` | 项目作品 · 最后一张小卡片之后 |
-| `<!-- INSERT: skill_programming -->` | 技能栈 · 编程与工具分组 |
-| `<!-- INSERT: skill_methods -->` | 技能栈 · 研究方法分组 |
-| `<!-- INSERT: skill_domain -->` | 技能栈 · 领域知识分组 |
-| `<!-- INSERT: hero_keyword -->` | Hero 区域 · 最后一枚关键词标签之后 |
+| 标记                                 | 位置                                   |
+| ------------------------------------ | -------------------------------------- |
+| `<!-- INSERT: education_item -->`    | 教育背景 · 最后一条 timeline-item 之后 |
+| `<!-- INSERT: research_card -->`     | 研究方向 · 最后一张 research-card 之后 |
+| `<!-- INSERT: publication_card -->`  | 发表论文 · 最后一篇 pub-card 之后      |
+| `<!-- INSERT: featured_project -->`  | 项目作品 · 最后一个精选项目之后        |
+| `<!-- INSERT: project_card -->`      | 项目作品 · 最后一张小卡片之后          |
+| `<!-- INSERT: skill_programming -->` | 技能栈 · 编程与工具分组                |
+| `<!-- INSERT: skill_methods -->`     | 技能栈 · 研究方法分组                  |
+| `<!-- INSERT: skill_domain -->`      | 技能栈 · 领域知识分组                  |
+| `<!-- INSERT: hero_keyword -->`      | Hero 区域 · 最后一枚关键词标签之后     |
 
 > 每次通过 admin.html 生成的代码都会注明对应的 INSERT 标记，在 `index.html` 中直接搜索即可定位。
 
