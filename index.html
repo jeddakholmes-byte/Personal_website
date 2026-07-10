@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Prevent FOUC: apply saved theme before paint -->
+  <script>
+    (function(){var t=localStorage.getItem('theme');if(!t||t==='system'){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)})();
+  </script>
   <meta name="description" content="邱超伟 (Chaowei Qiu) — 计算社会科学与公共政策评估方向研究者，关注政策反馈、行为干预、跨境治理、教育数据分析与因果推断。">
   <meta property="og:title" content="邱超伟 | Chaowei Qiu">
   <meta property="og:description" content="计算社会科学 · 公共政策评估 · 行为数据分析 · 跨境治理">
@@ -36,6 +40,10 @@
         <a href="#skills">技能</a>
         <a href="#contact">联系</a>
       </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换亮/暗主题">
+        <svg id="themeIconLight" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg id="themeIconDark" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
       <button class="nav-toggle" id="navToggle" aria-label="菜单" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -61,6 +69,7 @@
         <span class="hero-keyword">跨境治理</span>
         <span class="hero-keyword">因果推断</span>
         <span class="hero-keyword">计算文本分析</span>
+        <!-- INSERT: hero_keyword — 在此注释之后粘贴新的 Hero 关键词 -->
       </div>
       <div class="hero-stats">
         <div class="hero-stat">
@@ -158,6 +167,7 @@
             <p class="timeline-desc">GPA：85.6/100；相关训练包括心理统计、实验心理学、研究方法、心理测量、多层线性模型、Python编程与应用</p>
           </div>
         </div>
+        <!-- INSERT: education_item — 在此注释之后粘贴新的教育经历 timeline-item -->
       </div>
     </div>
   </section>
@@ -205,6 +215,7 @@
             <span>数据分析与系统开发</span>
           </div>
         </div>
+        <!-- INSERT: research_card — 在此注释之后粘贴新的研究方向卡片 -->
       </div>
     </div>
   </section>
@@ -278,6 +289,7 @@
           </a>
         </div>
       </article>
+      <!-- INSERT: publication_card — 在此注释之后粘贴新的论文条目 -->
     </div>
   </section>
 
@@ -400,6 +412,7 @@
         </div>
       </div>
 
+      <!-- INSERT: featured_project — 在此注释之后粘贴新的精选项目 -->
       <div class="projects-grid">
         <div class="glass-card project-card">
           <div class="project-card-visual project-visual-doc">
@@ -459,6 +472,7 @@
             <span class="project-status">学术项目 · 数据保密</span>
           </div>
         </div>
+        <!-- INSERT: project_card — 在此注释之后粘贴新的项目卡片 -->
       </div>
     </div>
   </section>
@@ -491,6 +505,7 @@
               <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
               <span class="skill-level">进阶</span>
             </div>
+            <!-- INSERT: skill_programming — 在此注释之后粘贴新的编程工具技能条目 -->
           </div>
         </div>
         <div class="glass-card skill-group">
@@ -516,6 +531,7 @@
               <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
               <span class="skill-level">熟练</span>
             </div>
+            <!-- INSERT: skill_methods — 在此注释之后粘贴新的研究方法技能条目 -->
           </div>
         </div>
         <div class="glass-card skill-group">
@@ -541,6 +557,7 @@
               <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
               <span class="skill-level">熟练</span>
             </div>
+            <!-- INSERT: skill_domain — 在此注释之后粘贴新的领域知识技能条目 -->
           </div>
         </div>
       </div>
@@ -584,6 +601,7 @@
   <footer class="footer">
     <div class="container">
       <p>&copy; 2026 邱超伟 Chaowei Qiu. Personal academic website hosted on GitHub Pages.</p>
+      <p style="margin-top:6px;font-size:0.78rem"><a href="admin.html" style="color:var(--muted);text-decoration:none">内容管理</a></p>
     </div>
   </footer>
 

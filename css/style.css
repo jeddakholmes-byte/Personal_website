@@ -26,6 +26,186 @@
   --ease: 180ms ease;
 }
 
+/* ── Dark Theme ── */
+[data-theme="dark"] {
+  --bg: #1a1d23;
+  --bg-soft: #22252d;
+  --paper: #252830;
+  --paper-muted: #2a2d35;
+  --ink: #e8e4dd;
+  --ink-soft: #b8b3aa;
+  --muted: #88837c;
+  --line: rgba(232, 228, 221, 0.10);
+  --line-strong: rgba(232, 228, 221, 0.18);
+  --blue: #7eb8d0;
+  --blue-soft: #1e3440;
+  --green: #7db8a0;
+  --gold: #c9a04c;
+  --red: #c97068;
+  --shadow: 0 12px 38px rgba(0, 0, 0, 0.38);
+}
+
+/* ── Dark-theme overrides for inline colours not covered by vars ── */
+[data-theme="dark"] body {
+  background:
+    linear-gradient(90deg, rgba(126, 184, 208, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(126, 184, 208, 0.04) 1px, transparent 1px),
+    var(--bg);
+  background-size: 42px 42px;
+}
+
+[data-theme="dark"] body::before {
+  background:
+    radial-gradient(circle at 16% 4%, rgba(126, 184, 208, 0.15), transparent 34%),
+    radial-gradient(circle at 88% 12%, rgba(125, 184, 160, 0.12), transparent 28%);
+}
+
+[data-theme="dark"] .nav.scrolled,
+[data-theme="dark"] .nav:has(.nav-links.open) {
+  background: rgba(37, 40, 48, 0.94);
+}
+
+[data-theme="dark"] .nav-logo,
+[data-theme="dark"] .nav-toggle {
+  background: rgba(37, 40, 48, 0.9);
+}
+
+[data-theme="dark"] .section-alt {
+  background: linear-gradient(180deg, rgba(34, 37, 45, 0.82), rgba(34, 37, 45, 0.54));
+  border-color: rgba(232, 228, 221, 0.06);
+}
+
+[data-theme="dark"] .hero-bg {
+  background:
+    linear-gradient(110deg, rgba(37, 40, 48, 0.86) 0%, rgba(37, 40, 48, 0.4) 48%, rgba(34, 37, 45, 0.56) 100%),
+    radial-gradient(circle at 82% 64%, rgba(201, 160, 76, 0.12), transparent 26%);
+}
+
+[data-theme="dark"] .hero-avatar {
+  background:
+    linear-gradient(180deg, rgba(37, 40, 48, 0.88), rgba(42, 45, 53, 0.96)),
+    repeating-linear-gradient(135deg, transparent 0 14px, rgba(126, 184, 208, 0.06) 14px 15px);
+}
+
+[data-theme="dark"] .glass-card {
+  background: rgba(37, 40, 48, 0.88);
+}
+
+[data-theme="dark"] .glass-card::before {
+  background: radial-gradient(circle 280px at var(--mx, 50%) var(--my, 50%), rgba(126, 184, 208, 0.12), transparent 65%);
+}
+
+[data-theme="dark"] .btn-primary {
+  color: #1a1d23;
+}
+
+[data-theme="dark"] .pub-abstract {
+  background: rgba(30, 52, 64, 0.5);
+}
+
+[data-theme="dark"] .pub-cite {
+  background: rgba(37, 40, 48, 0.7);
+}
+
+[data-theme="dark"] .pub-title a {
+  color: var(--ink);
+  text-decoration-color: rgba(126, 184, 208, 0.4);
+}
+
+[data-theme="dark"] .timeline::before {
+  background: linear-gradient(var(--blue), rgba(126, 184, 208, 0.1));
+}
+
+[data-theme="dark"] .timeline-dot {
+  border-color: var(--paper);
+}
+
+[data-theme="dark"] .hero-link:hover,
+[data-theme="dark"] .btn:hover,
+[data-theme="dark"] .contact-link:hover {
+  border-color: rgba(126, 184, 208, 0.44);
+  box-shadow: 0 14px 30px rgba(126, 184, 208, 0.14);
+}
+
+[data-theme="dark"] .hero-keyword,
+[data-theme="dark"] .project-tags span,
+[data-theme="dark"] .pub-kw,
+[data-theme="dark"] .project-status,
+[data-theme="dark"] .project-featured-badge {
+  background: rgba(37, 40, 48, 0.78);
+}
+
+[data-theme="dark"] .research-tag {
+  background: var(--blue-soft);
+}
+
+[data-theme="dark"] .hero-stats {
+  background: rgba(37, 40, 48, 0.78);
+}
+
+[data-theme="dark"] .contact-link {
+  background: rgba(37, 40, 48, 0.78);
+}
+
+[data-theme="dark"] .footer {
+  background: rgba(37, 40, 48, 0.6);
+}
+
+[data-theme="dark"] .project-featured-visual,
+[data-theme="dark"] .project-card-visual {
+  background:
+    linear-gradient(180deg, rgba(37, 40, 48, 0.9), rgba(42, 45, 53, 0.76)),
+    linear-gradient(90deg, rgba(126, 184, 208, 0.1) 1px, transparent 1px);
+  background-size: auto, 24px 100%;
+}
+
+[data-theme="dark"] .project-metric {
+  background: rgba(37, 40, 48, 0.7);
+}
+
+[data-theme="dark"] .mgti-preview,
+[data-theme="dark"] .report-preview {
+  background: var(--paper);
+}
+
+[data-theme="dark"] .nav-links.open {
+  background: rgba(37, 40, 48, 0.98);
+}
+
+/* ── Theme Toggle Button ── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(255, 253, 248, 0.8);
+  color: var(--gold);
+  cursor: pointer;
+  transition: background var(--ease), border-color var(--ease), transform var(--ease);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .theme-toggle {
+  background: rgba(37, 40, 48, 0.85);
+}
+
+.theme-toggle:hover {
+  border-color: var(--gold);
+  transform: rotate(15deg);
+}
+
+/* ── Transition on theme change ── */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 300ms ease, color 200ms ease, border-color 300ms ease, box-shadow 300ms ease !important;
+}
+
 *,
 *::before,
 *::after {
@@ -230,25 +410,23 @@ svg {
   width: min(100%, var(--max-width));
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.65fr);
-  gap: 56px;
-  align-items: center;
-  text-align: left;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  justify-items: center;
+  text-align: center;
 }
 
 .hero-avatar {
-  grid-column: 2;
-  grid-row: 1 / span 7;
-  justify-self: end;
-  align-self: stretch;
-  width: min(100%, 360px);
-  min-height: 460px;
-  border-radius: 18px;
-  border: 1px solid var(--line);
-  background:
-    linear-gradient(180deg, rgba(255, 253, 248, 0.84), rgba(248, 241, 231, 0.96)),
-    repeating-linear-gradient(135deg, transparent 0 14px, rgba(36, 86, 111, 0.045) 14px 15px);
-  box-shadow: var(--shadow);
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: center;
+  width: 150px;
+  min-height: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  background: var(--paper);
+  box-shadow: 0 16px 44px rgba(36, 86, 111, 0.14);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -256,34 +434,14 @@ svg {
   position: relative;
 }
 
-.hero-avatar::before {
-  content: "政策反馈 / 行为数据 / 跨境治理";
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  right: 24px;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  line-height: 1.6;
-  text-transform: uppercase;
-}
-
+.hero-avatar::before,
 .hero-avatar::after {
-  content: "";
-  position: absolute;
-  inset: auto 24px 24px 24px;
-  height: 150px;
-  border-top: 1px solid var(--line);
-  background:
-    linear-gradient(180deg, transparent 0 30%, rgba(36, 86, 111, 0.07)),
-    linear-gradient(90deg, rgba(36, 86, 111, 0.16) 1px, transparent 1px);
-  background-size: auto, 28px 100%;
+  display: none;
 }
 
 .avatar-placeholder {
-  width: 150px;
-  height: 150px;
+  width: 110px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -292,7 +450,7 @@ svg {
   background: var(--paper);
   color: var(--blue);
   font-family: var(--font-serif);
-  font-size: 4rem;
+  font-size: 3.2rem;
   font-weight: 700;
   box-shadow: 0 20px 50px rgba(36, 86, 111, 0.12);
 }
@@ -341,6 +499,7 @@ svg {
   flex-wrap: wrap;
   gap: 8px;
   margin: 0 0 28px;
+  justify-content: center;
 }
 
 .hero-keyword,
@@ -367,7 +526,7 @@ svg {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0;
   width: min(100%, 620px);
-  margin: 0 0 28px;
+  margin: 0 auto 28px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(255, 253, 248, 0.7);
@@ -410,7 +569,7 @@ svg {
 
 .hero-bio {
   max-width: 660px;
-  margin: 0 0 30px;
+  margin: 0 auto 30px;
   color: var(--ink-soft);
   font-size: 1.02rem;
 }
@@ -422,6 +581,7 @@ svg {
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+  justify-content: center;
 }
 
 .hero-link,
@@ -871,6 +1031,10 @@ svg {
   width: calc(50% - 4px);
 }
 
+.project-links {
+  justify-content: flex-start;
+}
+
 .project-featured-visual,
 .project-card-visual {
   border: 1px solid var(--line);
@@ -905,7 +1069,7 @@ svg {
 }
 
 .project-card-body {
-  padding: 24px;
+  padding: 28px 24px 24px;
 }
 
 .project-metrics {
@@ -1257,27 +1421,19 @@ svg {
   }
 
   .hero-content {
-    grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 24px;
   }
 
   .hero-avatar {
-    grid-column: auto;
-    grid-row: auto;
-    order: 2;
-    justify-self: stretch;
-    min-height: 260px;
-    width: 100%;
-  }
-
-  .hero-avatar::after {
-    height: 70px;
+    width: 120px;
+    min-height: 120px;
+    height: 120px;
   }
 
   .avatar-placeholder {
-    width: 118px;
-    height: 118px;
-    font-size: 3.1rem;
+    width: 90px;
+    height: 90px;
+    font-size: 2.6rem;
   }
 
   .about-grid,

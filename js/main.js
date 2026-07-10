@@ -14,6 +14,7 @@ if ('scrollRestoration' in history) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   initTypewriter();
   initScrollHandlers();
   initSmoothScroll();
@@ -341,4 +342,68 @@ function initCardSpotlight() {
       card.style.setProperty('--my', y + '%');
     });
   });
+}
+
+/* --- Theme Switching ---
+   Three-way: system (default), light, dark
+   Preference stored in localStorage key 'theme'
+   Values: 'system' | 'light' | 'dark'
+   FOUC prevented by inline <script> in <head>       */
+function initTheme() {
+  const toggle = document.getElementById('themeToggle');
+  const iconLight = document.getElementById('themeIconLight');
+  const iconDark = document.getElementById('themeIconDark');
+  if (!toggle) return;
+
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function getResolvedTheme() {
+    const stored = localStorage.getItem('theme') || 'system';
+    if (stored === 'light') return 'light';
+    if (stored === 'dark') return 'dark';
+    return mq.matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme) {
+    const html = document.documentElement;
+    // Brief transition class for smooth switch
+    html.classList.add('theme-transition');
+    html.setAttribute('data-theme', theme);
+    setTimeout(() => html.classList.remove('theme-transition'), 320);
+
+    // Toggle icon
+    const isDark = theme === 'dark';
+    if (iconLight) iconLight.style.display = isDark ? 'none' : '';
+    if (iconDark) iconDark.style.display = isDark ? '' : 'none';
+  }
+
+  function syncTheme() {
+    const stored = localStorage.getItem('theme') || 'system';
+    if (stored === 'light') { applyTheme('light'); return; }
+    if (stored === 'dark')  { applyTheme('dark');  return; }
+    // system — follow OS
+    applyTheme(mq.matches ? 'dark' : 'light');
+  }
+
+  // Cycle: system → light → dark → system
+  toggle.addEventListener('click', () => {
+    const current = localStorage.getItem('theme') || 'system';
+    const next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
+    localStorage.setItem('theme', next);
+
+    if (next === 'system') {
+      applyTheme(mq.matches ? 'dark' : 'light');
+    } else {
+      applyTheme(next);
+    }
+  });
+
+  // Listen for OS theme changes (only when in system mode)
+  mq.addEventListener('change', () => {
+    const stored = localStorage.getItem('theme') || 'system';
+    if (stored === 'system') applyTheme(mq.matches ? 'dark' : 'light');
+  });
+
+  // Sync on load (already done by inline script, but ensure icon is correct)
+  syncTheme();
 }

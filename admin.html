@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>内容管理 · Chaowei Qiu</title>
+  <!-- Prevent FOUC: apply saved theme before paint -->
+  <script>
+    (function(){var t=localStorage.getItem('theme');if(!t||t==='system'){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)})();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --paper: #fffdf8;
+      --paper-muted: #f8f1e7;
+      --ink: #1e2a2f;
+      --ink-soft: #4b5960;
+      --muted: #768087;
+      --line: rgba(30,42,47,0.14);
+      --line-strong: rgba(30,42,47,0.22);
+      --blue: #24566f;
+      --blue-soft: #dceaf0;
+      --green: #427261;
+      --gold: #9b6f2f;
+      --red: #9f4f46;
+      --shadow: 0 12px 38px rgba(48,42,35,0.07);
+      --radius: 10px;
+      --radius-sm: 7px;
+      --font-serif: "Lora","Noto Serif SC",Georgia,serif;
+      --font-sans: "Inter","Noto Sans SC",-apple-system,sans-serif;
+      --font-mono: "JetBrains Mono","SF Mono",Consolas,monospace;
+      --ease: 180ms ease;
+    }
+
+    /* ── Dark Theme ── */
+    [data-theme="dark"] {
+      --bg: #1a1d23;
+      --paper: #252830;
+      --paper-muted: #2a2d35;
+      --ink: #e8e4dd;
+      --ink-soft: #b8b3aa;
+      --muted: #88837c;
+      --line: rgba(232, 228, 221, 0.10);
+      --line-strong: rgba(232, 228, 221, 0.18);
+      --blue: #7eb8d0;
+      --blue-soft: #1e3440;
+      --green: #7db8a0;
+      --gold: #c9a04c;
+      --red: #c97068;
+      --shadow: 0 12px 38px rgba(0, 0, 0, 0.36);
+    }
+
+    [data-theme="dark"] .admin-header {
+      background: rgba(37, 40, 48, 0.94);
+    }
+
+    [data-theme="dark"] .tab-btn.active {
+      background: var(--paper);
+      border-bottom-color: var(--paper);
+    }
+
+    [data-theme="dark"] .form-card,
+    [data-theme="dark"] .output-card {
+      background: var(--paper);
+    }
+
+    [data-theme="dark"] .form-input,
+    [data-theme="dark"] .form-textarea,
+    [data-theme="dark"] .form-select {
+      background: rgba(42, 45, 53, 0.7);
+    }
+
+    [data-theme="dark"] .output-code {
+      background: rgba(42, 45, 53, 0.5);
+    }
+
+    [data-theme="dark"] .output-location {
+      background: rgba(30, 52, 64, 0.3);
+    }
+
+    [data-theme="dark"] .btn-generate {
+      color: #1a1d23;
+    }
+
+    [data-theme="dark"] .btn-copy {
+      background: rgba(42, 45, 53, 0.7);
+    }
+
+    /* ── Theme Toggle Button (admin page) ── */
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--paper-muted);
+      color: var(--gold);
+      cursor: pointer;
+      transition: background var(--ease), border-color var(--ease), transform var(--ease);
+      flex-shrink: 0;
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      background: rgba(42, 45, 53, 0.8);
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--gold);
+      transform: rotate(15deg);
+    }
+
+    html.theme-transition,
+    html.theme-transition *,
+    html.theme-transition *::before,
+    html.theme-transition *::after {
+      transition: background-color 300ms ease, color 200ms ease, border-color 300ms ease !important;
+    }
+
+    *,*::before,*::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .admin-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,253,248,0.92);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .admin-header-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .admin-title {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .admin-title svg { flex-shrink: 0; }
+    .admin-home {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      transition: border-color var(--ease);
+    }
+    .admin-home:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ── Tabs ── */
+    .tabs {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 18px 24px 0;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+    }
+    .tab-btn {
+      flex-shrink: 0;
+      padding: 10px 18px;
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      background: transparent;
+      color: var(--ink-soft);
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--ease);
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--blue); background: rgba(36,86,111,0.04); }
+    .tab-btn.active {
+      color: var(--blue);
+      background: var(--paper);
+      border-color: var(--line);
+      border-bottom-color: var(--paper);
+      margin-bottom: -1px;
+    }
+
+    /* ── Main Content ── */
+    .admin-main {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Layout ── */
+    .panel-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(380px, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .panel-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Form Card ── */
+    .form-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .form-card h3 {
+      margin: 0 0 20px;
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      color: var(--ink);
+    }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .form-label .optional { color: var(--muted); font-weight: 400; }
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: rgba(255,253,248,0.7);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      transition: border-color var(--ease);
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(36,86,111,0.08);
+    }
+    .form-textarea { min-height: 80px; resize: vertical; }
+    .form-select { cursor: pointer; }
+    .form-hint {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+    }
+    .form-check input { width: 16px; height: 16px; accent-color: var(--blue); }
+
+    .btn-generate {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      margin-top: 8px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--blue);
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity var(--ease), transform var(--ease);
+    }
+    .btn-generate:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── Output Card ── */
+    .output-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 90px;
+    }
+    .output-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .output-header h3 {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--ink);
+    }
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--paper-muted);
+      color: var(--ink-soft);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--ease);
+    }
+    .btn-copy:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-copy.copied { background: var(--green); color: #fff; border-color: var(--green); }
+
+    .output-code {
+      margin: 0;
+      padding: 18px 20px;
+      background: rgba(248,241,231,0.6);
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      white-space: pre;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+    .output-code .tag { color: var(--blue); }
+    .output-code .attr { color: var(--gold); }
+    .output-code .val { color: var(--green); }
+    .output-code .comment { color: var(--muted); font-style: italic; }
+
+    .output-location {
+      padding: 14px 20px;
+      border-top: 1px solid var(--line);
+      background: rgba(220,234,240,0.3);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+    .output-location strong { color: var(--blue); }
+    .output-location code {
+      background: rgba(36,86,111,0.08);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .output-empty {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .output-empty svg { display: block; margin: 0 auto 12px; color: var(--line-strong); }
+
+    /* ── Author/Affiliation inline fields ── */
+    .inline-fields {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .inline-field {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .inline-field input {
+      width: 70px;
+      padding: 4px 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+    }
+    .inline-field sup { color: var(--blue); font-size: 0.7rem; }
+
+    .btn-add {
+      padding: 4px 10px;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--blue);
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .btn-remove {
+      padding: 2px 6px;
+      border: none;
+      background: transparent;
+      color: var(--red);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header class="admin-header">
+  <div class="admin-header-inner">
+    <h1 class="admin-title">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      内容管理 · 代码生成器
+    </h1>
+    <a href="index.html" class="admin-home">← 返回主页</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换亮/暗主题">
+      <svg id="themeIconLight" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg id="themeIconDark" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="tabs" id="tabs">
+  <button class="tab-btn active" data-tab="education">🎓 教育经历</button>
+  <button class="tab-btn" data-tab="research">🔬 研究方向</button>
+  <button class="tab-btn" data-tab="publication">📄 发表论文</button>
+  <button class="tab-btn" data-tab="featured-project">⭐ 精选项目</button>
+  <button class="tab-btn" data-tab="project-card">📋 项目卡片</button>
+  <button class="tab-btn" data-tab="skill">💻 技能条目</button>
+  <button class="tab-btn" data-tab="hero-keyword">🏷️ Hero关键词</button>
+</div>
+
+<main class="admin-main">
+
+  <!-- ========== EDUCATION ========== -->
+  <div class="tab-panel active" id="panel-education">
+    <div class="panel-grid">
+      <div class="form-card">
+        <h3>新增教育经历</h3>
+        <div class="form-group">
+          <label class="form-label">时间范围</label>
+          <input class="form-input" id="edu-date" placeholder="2028 — 2030">
+          <span class="form-hint">例如：2028 — 2030</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">学校名称</label>
+          <input class="form-input" id="edu-school" placeholder="某某大学">
+        </div>
+        <div class="form-group">
+          <label class="form-label">学位 / 专业</label>
+          <input class="form-input" id="edu-degree" placeholder="计算社会科学 · 硕士">
+        </div>
+        <div class="form-group">
+          <label class="form-label">描述 <span class="optional">(可选)</span></label>
+          <textarea class="form-textarea" id="edu-desc" placeholder="GPA、研究方向、相关训练等"></textarea>
+        </div>
+        <button class="btn-generate" onclick="generateEducation()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          生成代码
+        </button>
+      </div>
+      <div class="output-card" id="output-education">
+        <div class="output-header">
+          <h3>生成的代码</h3>
+          <button class="btn-copy" onclick="copyCode('output-education')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            复制
+          </button>
+        </div>
+        <div class="output-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          填写表单后点击「生成代码」
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== RESEARCH ========== -->
+  <div class="tab-panel" id="panel-research">
+    <div class="panel-grid">
+      <div class="form-card">
+        <h3>新增研究方向卡片</h3>
+        <div class="form-group">
+          <label class="form-label">标签</label>
+          <input class="form-input" id="research-tag" placeholder="公共政策 / 绿色交通 / 行为干预 / 教育数据">
+          <span class="form-hint">显示在卡片左上角的分类标签</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">标题</label>
+          <input class="form-input" id="research-title" placeholder="研究方向标题">
+        </div>
+        <div class="form-group">
+          <label class="form-label">描述</label>
+          <textarea class="form-textarea" id="research-desc" placeholder="简要描述研究内容、方法、数据等"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">元信息 1</label>
+            <input class="form-input" id="research-meta1" placeholder="共同作者 / 已发表">
+          </div>
+          <div class="form-group">
+            <label class="form-label">元信息 2 <span class="optional">(可选)</span></label>
+            <input class="form-input" id="research-meta2" placeholder="进行中 / 已交付">
+          </div>
+        </div>
+        <button class="btn-generate" onclick="generateResearch()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          生成代码
+        </button>
+      </div>
+      <div class="output-card" id="output-research">
+        <div class="output-header">
+          <h3>生成的代码</h3>
+          <button class="btn-copy" onclick="copyCode('output-research')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            复制
+          </button>
+        </div>
+        <div class="output-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          填写表单后点击「生成代码」
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PUBLICATION ========== -->
+  <div class="tab-panel" id="panel-publication">
+    <div class="panel-grid">
+      <div class="form-card">
+        <h3>新增论文条目</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">编号</label>
+            <input class="form-input" id="pub-number" placeholder="02">
+          </div>
+          <div class="form-group">
+            <label class="form-label">期刊分类标签</label>
+            <input class="form-input" id="pub-journal-cat" placeholder="【ESG与低碳技术】">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">中文标题</label>
+          <input class="form-input" id="pub-title-cn" placeholder="论文中文标题">
+        </div>
+        <div class="form-group">
+          <label class="form-label">英文标题 <span class="optional">(可选)</span></label>
+          <input class="form-input" id="pub-title-en" placeholder="English title of the paper">
+        </div>
+        <div class="form-group">
+          <label class="form-label">作者 <span class="optional">(每行一个，格式：姓名^上标编号)</span></label>
+          <div id="pub-authors-container">
+            <div class="inline-fields author-row">
+              <input class="form-input" style="width:auto;flex:1" value="姓名^1" placeholder="姓名^1">
+              <button class="btn-remove" onclick="removeRow(this)" title="删除">×</button>
+            </div>
+          </div>
+          <button class="btn-add" style="margin-top:8px" onclick="addAuthorRow()">+ 添加作者</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">作者单位 <span class="optional">(每行一个，格式：^上标编号 单位名)</span></label>
+          <div id="pub-affiliations-container">
+            <div class="inline-fields aff-row">
+              <input class="form-input" style="width:auto;flex:1" value="^1 单位名称" placeholder="^1 单位名称">
+              <button class="btn-remove" onclick="removeRow(this)" title="删除">×</button>
+            </div>
+          </div>
+          <button class="btn-add" style="margin-top:8px" onclick="addAffRow()">+ 添加单位</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">期刊名</label>
+            <input class="form-input" id="pub-journal" placeholder="《期刊名称》">
+          </div>
+          <div class="form-group">
+            <label class="form-label">期刊信息</label>
+            <input class="form-input" id="pub-journal-meta" placeholder="2026 · 第1期（总第1期）">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">出版社</label>
+          <input class="form-input" id="pub-publisher" placeholder="某某出版社">
+        </div>
+        <div class="form-group">
+          <label class="form-label">关键词 <span class="optional">(逗号分隔)</span></label>
+          <input class="form-input" id="pub-keywords" placeholder="扎根理论, 跨境通勤, 灵活行">
+        </div>
+        <div class="form-group">
+          <label class="form-label">摘要</label>
+          <textarea class="form-textarea" id="pub-abstract" placeholder="论文摘要内容"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">引用格式</label>
+          <input class="form-input" id="pub-cite" placeholder="作者. 标题[J]. 期刊, 年份(期): 页码.">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">原文链接 <span class="optional">(可选)</span></label>
+            <input class="form-input" id="pub-url" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">PDF链接 <span class="optional">(可选)</span></label>
+            <input class="form-input" id="pub-pdf-url" placeholder="https://...">
+          </div>
+        </div>
+        <button class="btn-generate" onclick="generatePublication()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          生成代码
+        </button>
+      </div>
+      <div class="output-card" id="output-publication">
+        <div class="output-header">
+          <h3>生成的代码</h3>
+          <button class="btn-copy" onclick="copyCode('output-publication')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            复制
+          </button>
+        </div>
+        <div class="output-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          填写表单后点击「生成代码」
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FEATURED PROJECT ========== -->
+  <div class="tab-panel" id="panel-featured-project">
+    <div class="panel-grid">
+      <div class="form-card">
+        <h3>新增精选项目</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">编号</label>
+            <input class="form-input" id="fp-number" placeholder="03">
+          </div>
+          <div class="form-group">
+            <label class="form-label">徽章文字</label>
+            <input class="form-input" id="fp-badge" value="精选项目">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">标题</label>
+          <input class="form-input" id="fp-title" placeholder="项目名称">
+        </div>
+        <div class="form-group">
+          <label class="form-label">副标题</label>
+          <input class="form-input" id="fp-subtitle" placeholder="技术栈 · 功能定位">
+        </div>
+        <div class="form-group">
+          <label class="form-label">描述</label>
+          <textarea class="form-textarea" id="fp-desc" placeholder="项目描述"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">标签 <span class="optional">(逗号分隔)</span></label>
+          <input class="form-input" id="fp-tags" placeholder="Python, Pandas, Chart.js">
+        </div>
+        <div class="form-group">
+          <label class="form-label">功能点 <span class="optional">(每行一个)</span></label>
+          <textarea class="form-textarea" id="fp-features" placeholder="✓ 功能1&#10;✓ 功能2&#10;✓ 功能3"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">演示链接 <span class="optional">(可选)</span></label>
+            <input class="form-input" id="fp-demo-url" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">仓库链接 <span class="optional">(可选)</span></label>
+            <input class="form-input" id="fp-repo-url" placeholder="https://github.com/...">
+          </div>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="fp-reverse">
+          <label for="fp-reverse">反转布局（图片在右，文字在左）</label>
+        </div>
+        <button class="btn-generate" onclick="generateFeaturedProject()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          生成代码
+        </button>
+      </div>
+      <div class="output-card" id="output-featured-project">
+        <div class="output-header">
+          <h3>生成的代码</h3>
+          <button class="btn-copy" onclick="copyCode('output-featured-project')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            复制
+          </button>
+        </div>
+        <div class="output-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          填写表单后点击「生成代码」
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PROJECT CARD ========== -->
+  <div class="tab-panel" id="panel-project-card">
+    <div class="panel-grid">
+      <div class="form-card">
+        <h3>新增项目卡片（小卡片）</h3>
+        <div class="form-group">
+          <label class="form-label">编号</label>
+          <input class="form-input" id="pc-number" placeholder="05">
+        </div>
+        <div class="form-group">
+          <label class="form-label">标题</label>
+          <input class="form-input" id="pc-title" placeholder="项目名称">
+        </div>
+        <div class="form-group">
+          <label class="form-label">描述</label>
+          <textarea class="form-textarea" id="pc-desc" placeholder="项目描述"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">标签 <span class="optional">(逗号分隔)</span></label>
+          <input class="form-input" id="pc-tags" placeholder="Python, NLP, 数据分析">
+        </div>
+        <div class="form-group">
+          <label class="form-label">指标数据 <span class="optional">(每行：标签 | 数值)</span></label>
+          <textarea class="form-textarea" id="pc-metrics" placeholder="样本量 | 353份&#10;方法 | OLS&#10;技术 | TF-IDF"></textarea>
+          <span class="form-hint">最多3行，每行生成一个指标卡片</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">状态文字</label>
+          <input class="form-input" id="pc-status" placeholder="学术项目 · 数据保密">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">预览类型</label>
+            <select class="form-select" id="pc-visual-type">
+              <option value="doc">文档（NLP风格）</option>
+              <option value="stats">统计（散点图风格）</option>
+              <option value="none">无预览</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">预览标签</label>
+            <input class="form-input" id="pc-visual-label" placeholder="NLP 匹配 / 回归分析">
+          </div>
+        </div>
+        <button class="btn-generate" onclick="generateProjectCard()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          生成代码
+        </button>
+      </div>
+      <div class="output-card" id="output-project-card">
+        <div class="output-header">
+          <h3>生成的代码</h3>
+          <button class="btn-copy" onclick="copyCode('output-project-card')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            复制
+          </button>
+        </div>
+        <div class="output-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          填写表单后点击「生成代码」
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SKILL ========== -->
+  <div class="tab-panel" id="panel-skill">
+    <div class="panel-grid">
+      <div class="form-card">
+        <h3>新增技能条目</h3>
+        <div class="form-group">
+          <label class="form-label">技能名称</label>
+          <input class="form-input" id="skill-name" placeholder="Python / 因果推断 / 公共管理">
+        </div>
+        <div class="form-group">
+          <label class="form-label">掌握程度 <span id="skill-pct-label">75%</span></label>
+          <input type="range" class="form-input" id="skill-pct" min="0" max="100" value="75" style="padding:0;border:none" oninput="document.getElementById('skill-pct-label').textContent=this.value+'%'">
+        </div>
+        <div class="form-group">
+          <label class="form-label">水平描述</label>
+          <select class="form-select" id="skill-level">
+            <option value="精通">精通</option>
+            <option value="进阶" selected>进阶</option>
+            <option value="熟练">熟练</option>
+            <option value="入门">入门</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">所属分组</label>
+          <select class="form-select" id="skill-group">
+            <option value="programming">编程与工具</option>
+            <option value="methods">研究方法</option>
+            <option value="domain">领域知识</option>
+          </select>
+          <span class="form-hint">决定粘贴到哪个技能组，插入点自动匹配</span>
+        </div>
+        <button class="btn-generate" onclick="generateSkill()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          生成代码
+        </button>
+      </div>
+      <div class="output-card" id="output-skill">
+        <div class="output-header">
+          <h3>生成的代码</h3>
+          <button class="btn-copy" onclick="copyCode('output-skill')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            复制
+          </button>
+        </div>
+        <div class="output-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          填写表单后点击「生成代码」
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== HERO KEYWORD ========== -->
+  <div class="tab-panel" id="panel-hero-keyword">
+    <div class="panel-grid">
+      <div class="form-card">
+        <h3>新增 Hero 关键词</h3>
+        <div class="form-group">
+          <label class="form-label">关键词</label>
+          <input class="form-input" id="hk-text" placeholder="计算社会科学">
+        </div>
+        <button class="btn-generate" onclick="generateHeroKeyword()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          生成代码
+        </button>
+      </div>
+      <div class="output-card" id="output-hero-keyword">
+        <div class="output-header">
+          <h3>生成的代码</h3>
+          <button class="btn-copy" onclick="copyCode('output-hero-keyword')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            复制
+          </button>
+        </div>
+        <div class="output-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          填写表单后点击「生成代码」
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ============================================
+   Theme Switching (shared logic with main page)
+   ============================================ */
+(function() {
+  const toggle = document.getElementById('themeToggle');
+  const iconLight = document.getElementById('themeIconLight');
+  const iconDark = document.getElementById('themeIconDark');
+  if (!toggle) return;
+
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function applyTheme(theme) {
+    var html = document.documentElement;
+    html.classList.add('theme-transition');
+    html.setAttribute('data-theme', theme);
+    setTimeout(function(){ html.classList.remove('theme-transition'); }, 320);
+    var isDark = theme === 'dark';
+    if (iconLight) iconLight.style.display = isDark ? 'none' : '';
+    if (iconDark) iconDark.style.display = isDark ? '' : 'none';
+  }
+
+  function syncTheme() {
+    var stored = localStorage.getItem('theme') || 'system';
+    if (stored === 'light') { applyTheme('light'); return; }
+    if (stored === 'dark')  { applyTheme('dark');  return; }
+    applyTheme(mq.matches ? 'dark' : 'light');
+  }
+
+  toggle.addEventListener('click', function() {
+    var current = localStorage.getItem('theme') || 'system';
+    var next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
+    localStorage.setItem('theme', next);
+    if (next === 'system') applyTheme(mq.matches ? 'dark' : 'light');
+    else applyTheme(next);
+  });
+
+  mq.addEventListener('change', function() {
+    if ((localStorage.getItem('theme') || 'system') === 'system') {
+      applyTheme(mq.matches ? 'dark' : 'light');
+    }
+  });
+
+  syncTheme();
+})();
+
+/* ============================================
+   Tab switching
+   ============================================ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ============================================
+   Dynamic author/affiliation rows
+   ============================================ */
+function addAuthorRow() {
+  const container = document.getElementById('pub-authors-container');
+  const row = document.createElement('div');
+  row.className = 'inline-fields author-row';
+  row.innerHTML = '<input class="form-input" style="width:auto;flex:1" placeholder="姓名^编号">' +
+    '<button class="btn-remove" onclick="removeRow(this)" title="删除">×</button>';
+  container.appendChild(row);
+}
+function addAffRow() {
+  const container = document.getElementById('pub-affiliations-container');
+  const row = document.createElement('div');
+  row.className = 'inline-fields aff-row';
+  row.innerHTML = '<input class="form-input" style="width:auto;flex:1" placeholder="^编号 单位名称">' +
+    '<button class="btn-remove" onclick="removeRow(this)" title="删除">×</button>';
+  container.appendChild(row);
+}
+function removeRow(btn) {
+  const row = btn.parentElement;
+  if (row.parentElement.children.length > 1) row.remove();
+}
+
+/* ============================================
+   Utility: set output content
+   ============================================ */
+function setOutput(outputId, codeHTML, locationHTML) {
+  const card = document.getElementById(outputId);
+  card.innerHTML =
+    '<div class="output-header">' +
+      '<h3>生成的代码</h3>' +
+      '<button class="btn-copy" onclick="copyCode(\'' + outputId + '\')">' +
+        '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>' +
+        '复制' +
+      '</button>' +
+    '</div>' +
+    '<pre class="output-code">' + codeHTML + '</pre>' +
+    '<div class="output-location">' + locationHTML + '</div>';
+}
+
+function escapeHTML(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ============================================
+   Copy to clipboard
+   ============================================ */
+function copyCode(outputId) {
+  const pre = document.querySelector('#' + outputId + ' .output-code');
+  if (!pre) return;
+  const text = pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('#' + outputId + ' .btn-copy');
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>已复制';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>复制';
+    }, 2000);
+  });
+}
+
+/* ============================================
+   Location helpers — each section has a fixed marker
+   ============================================ */
+const LOCATIONS = {
+  education:    { marker: 'INSERT: education_item',     desc: '「教育背景」板块，最后一个 timeline-item 之后' },
+  research:     { marker: 'INSERT: research_card',      desc: '「研究方向」板块，最后一个 research-card 之后' },
+  publication:  { marker: 'INSERT: publication_card',    desc: '「发表论文」板块，最后一个 pub-card 之后' },
+  featured:     { marker: 'INSERT: featured_project',    desc: '「项目作品」板块，最后一个精选项目之后、项目卡片网格之前' },
+  project_card: { marker: 'INSERT: project_card',        desc: '「项目作品」板块，最后一个项目小卡片之后' },
+  skill_programming: { marker: 'INSERT: skill_programming', desc: '「技能栈」→「编程与工具」分组，最后一个条目之后' },
+  skill_methods:     { marker: 'INSERT: skill_methods',     desc: '「技能栈」→「研究方法」分组，最后一个条目之后' },
+  skill_domain:      { marker: 'INSERT: skill_domain',      desc: '「技能栈」→「领域知识」分组，最后一个条目之后' },
+  hero_keyword: { marker: 'INSERT: hero_keyword',       desc: 'Hero 区域，最后一枚关键词标签之后' },
+};
+
+function locationHTML(key) {
+  const loc = LOCATIONS[key];
+  return '<strong>📍 粘贴位置：</strong><br>' +
+    '在 <code>index.html</code> 中搜索注释<br>' +
+    '<code>&lt;!-- ' + loc.marker + ' —</code><br>' +
+    '<strong>在该注释之后粘贴以上代码。</strong><br>' +
+    '<span style="color:var(--muted)">位置描述：' + loc.desc + '</span>';
+}
+
+/* ============================================
+   Generators
+   ============================================ */
+
+function generateEducation() {
+  const date   = document.getElementById('edu-date').value.trim();
+  const school = document.getElementById('edu-school').value.trim();
+  const degree = document.getElementById('edu-degree').value.trim();
+  const desc   = document.getElementById('edu-desc').value.trim();
+
+  let code = '';
+  code += '        <div class="timeline-item glass-card">\n';
+  code += '          <div class="timeline-dot"></div>\n';
+  code += '          <div class="timeline-content">\n';
+  code += '            <span class="timeline-date">' + escapeHTML(date || '时间范围') + '</span>\n';
+  code += '            <h3>' + escapeHTML(school || '学校名称') + '</h3>\n';
+  code += '            <p class="timeline-degree">' + escapeHTML(degree || '学位 · 专业') + '</p>\n';
+  if (desc) code += '            <p class="timeline-desc">' + escapeHTML(desc) + '</p>\n';
+  code += '          </div>\n';
+  code += '        </div>';
+
+  setOutput('output-education', escapeHTML(code), locationHTML('education'));
+}
+
+function generateResearch() {
+  const tag   = document.getElementById('research-tag').value.trim();
+  const title = document.getElementById('research-title').value.trim();
+  const desc  = document.getElementById('research-desc').value.trim();
+  const meta1 = document.getElementById('research-meta1').value.trim();
+  const meta2 = document.getElementById('research-meta2').value.trim();
+
+  let metaHTML = '';
+  if (meta1 || meta2) {
+    metaHTML += '          <div class="research-meta">\n';
+    if (meta1) metaHTML += '            <span>' + escapeHTML(meta1) + '</span>\n';
+    if (meta1 && meta2) metaHTML += '            <span class="meta-sep">·</span>\n';
+    if (meta2) metaHTML += '            <span>' + escapeHTML(meta2) + '</span>\n';
+    metaHTML += '          </div>';
+  }
+
+  let code = '';
+  code += '        <div class="glass-card research-card">\n';
+  code += '          <div class="research-tag">' + escapeHTML(tag || '标签') + '</div>\n';
+  code += '          <h3>' + escapeHTML(title || '标题') + '</h3>\n';
+  code += '          <p>' + escapeHTML(desc || '描述') + '</p>\n';
+  if (metaHTML) code += metaHTML + '\n';
+  code += '        </div>';
+
+  setOutput('output-research', escapeHTML(code), locationHTML('research'));
+}
+
+function generatePublication() {
+  const number      = document.getElementById('pub-number').value.trim();
+  const titleCN     = document.getElementById('pub-title-cn').value.trim();
+  const titleEN     = document.getElementById('pub-title-en').value.trim();
+  const journalCat  = document.getElementById('pub-journal-cat').value.trim();
+  const journal     = document.getElementById('pub-journal').value.trim();
+  const journalMeta = document.getElementById('pub-journal-meta').value.trim();
+  const publisher   = document.getElementById('pub-publisher').value.trim();
+  const keywords    = document.getElementById('pub-keywords').value.trim();
+  const abstract    = document.getElementById('pub-abstract').value.trim();
+  const cite        = document.getElementById('pub-cite').value.trim();
+  const url         = document.getElementById('pub-url').value.trim();
+  const pdfURL      = document.getElementById('pub-pdf-url').value.trim();
+
+  // Authors
+  const authorInputs = document.querySelectorAll('#pub-authors-container .author-row input');
+  let authorsHTML = '';
+  authorInputs.forEach(inp => {
+    const v = inp.value.trim();
+    if (v) {
+      const parts = v.split('^');
+      if (parts.length === 2) {
+        authorsHTML += '          <span>' + escapeHTML(parts[0]) + '<sup>' + escapeHTML(parts[1]) + '</sup></span>\n';
+      } else {
+        authorsHTML += '          <span>' + escapeHTML(v) + '</span>\n';
+      }
+    }
+  });
+
+  // Affiliations
+  const affInputs = document.querySelectorAll('#pub-affiliations-container .aff-row input');
+  let affsHTML = '';
+  affInputs.forEach(inp => {
+    const v = inp.value.trim();
+    if (v) {
+      const parts = v.split(' ');
+      const sup = parts[0]; // ^1, ^2, etc.
+      const name = parts.slice(1).join(' ');
+      affsHTML += '          <span><sup>' + escapeHTML(sup.replace('^','')) + '</sup> ' + escapeHTML(name) + '</span>\n';
+    }
+  });
+
+  // Keywords
+  let kwHTML = '';
+  if (keywords) {
+    const kws = keywords.split(/[,，]/).map(k => k.trim()).filter(Boolean);
+    kws.forEach(kw => {
+      kwHTML += '          <span class="pub-kw">' + escapeHTML(kw) + '</span>\n';
+    });
+  }
+
+  // Links
+  let linksHTML = '';
+  if (url || pdfURL) {
+    linksHTML += '        <div class="pub-links">\n';
+    if (url) {
+      linksHTML += '          <a href="' + escapeHTML(url) + '" target="_blank" class="btn btn-primary" rel="noopener">\n';
+      linksHTML += '            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>\n';
+      linksHTML += '            查看原文\n          </a>\n';
+    }
+    if (pdfURL) {
+      linksHTML += '          <a href="' + escapeHTML(pdfURL) + '" target="_blank" class="btn btn-outline" rel="noopener">\n';
+      linksHTML += '            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>\n';
+      linksHTML += '            下载 PDF\n          </a>\n';
+    }
+    linksHTML += '        </div>\n';
+  }
+
+  let code = '';
+  code += '      <article class="glass-card pub-card">\n';
+  code += '        <div class="pub-header">\n';
+  code += '          <span class="pub-number">' + escapeHTML(number || 'XX') + '</span>\n';
+  code += '          <div class="pub-title-area">\n';
+  code += '            <h3 class="pub-title">\n';
+  if (url) {
+    code += '              <a href="' + escapeHTML(url) + '" target="_blank" rel="noopener">\n';
+    code += '                ' + escapeHTML(titleCN || '中文标题') + '\n';
+    code += '              </a>\n';
+  } else {
+    code += '              ' + escapeHTML(titleCN || '中文标题') + '\n';
+  }
+  code += '            </h3>\n';
+  if (titleEN) code += '            <p class="pub-title-en">' + escapeHTML(titleEN) + '</p>\n';
+  code += '          </div>\n';
+  code += '        </div>\n\n';
+
+  if (authorsHTML) {
+    code += '        <div class="pub-authors">\n' + authorsHTML + '        </div>\n';
+  }
+  if (affsHTML) {
+    code += '        <div class="pub-affiliations">\n' + affsHTML + '        </div>\n';
+  }
+
+  code += '\n        <div class="pub-journal">\n';
+  code += '          <span class="pub-journal-name">' + escapeHTML(journal || '期刊名') + '</span>\n';
+  if (journalMeta) code += '          <span class="pub-journal-meta">' + escapeHTML(journalMeta) + '</span>\n';
+  if (journalCat) code += '          <span class="pub-journal-cat">' + escapeHTML(journalCat) + '</span>\n';
+  if (publisher) code += '          <span class="pub-journal-pub">' + escapeHTML(publisher) + '</span>\n';
+  code += '        </div>\n';
+
+  if (kwHTML) {
+    code += '\n        <div class="pub-keywords">\n';
+    code += '          <span class="pub-kw-label">关键词</span>\n' + kwHTML;
+    code += '        </div>\n';
+  }
+
+  if (abstract) {
+    code += '\n        <div class="pub-abstract">\n';
+    code += '          <span class="pub-abstract-label">摘要</span>\n';
+    code += '          <p class="pub-abstract-text">' + escapeHTML(abstract) + '</p>\n';
+    code += '        </div>\n';
+  }
+
+  if (cite) {
+    code += '\n        <div class="pub-cite">\n';
+    code += '          <span class="pub-cite-label">引用格式</span>\n';
+    code += '          <code class="pub-cite-text">' + escapeHTML(cite) + '</code>\n';
+    code += '        </div>\n';
+  }
+
+  if (linksHTML) code += '\n' + linksHTML;
+  code += '      </article>';
+
+  setOutput('output-publication', escapeHTML(code), locationHTML('publication'));
+}
+
+function generateFeaturedProject() {
+  const number   = document.getElementById('fp-number').value.trim();
+  const badge    = document.getElementById('fp-badge').value.trim() || '精选项目';
+  const title    = document.getElementById('fp-title').value.trim();
+  const subtitle = document.getElementById('fp-subtitle').value.trim();
+  const desc     = document.getElementById('fp-desc').value.trim();
+  const tags     = document.getElementById('fp-tags').value.trim();
+  const features = document.getElementById('fp-features').value.trim();
+  const demoURL  = document.getElementById('fp-demo-url').value.trim();
+  const repoURL  = document.getElementById('fp-repo-url').value.trim();
+  const reverse  = document.getElementById('fp-reverse').checked;
+
+  let tagsHTML = '';
+  if (tags) {
+    const tagList = tags.split(/[,，]/).map(t => t.trim()).filter(Boolean);
+    tagList.forEach(t => { tagsHTML += '<span>' + escapeHTML(t) + '</span>'; });
+  }
+
+  let featuresHTML = '';
+  if (features) {
+    const featureList = features.split('\n').map(f => f.trim()).filter(Boolean);
+    featureList.forEach(f => { featuresHTML += '              <span>' + escapeHTML(f) + '</span>\n'; });
+  }
+
+  let linksHTML = '';
+  if (demoURL || repoURL) {
+    linksHTML += '            <div class="project-links">\n';
+    if (demoURL) {
+      linksHTML += '              <a href="' + escapeHTML(demoURL) + '" target="_blank" class="btn btn-primary" rel="noopener">\n';
+      linksHTML += '                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>\n';
+      linksHTML += '                在线体验\n              </a>\n';
+    }
+    if (repoURL) {
+      linksHTML += '              <a href="' + escapeHTML(repoURL) + '" target="_blank" class="btn btn-outline" rel="noopener">\n';
+      linksHTML += '                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>\n';
+      linksHTML += '                查看仓库\n              </a>\n';
+    }
+    linksHTML += '            </div>\n';
+  }
+
+  const reverseClass = reverse ? ' project-featured-reverse' : '';
+
+  let code = '';
+  code += '      <div class="project-featured glass-card' + reverseClass + '">\n';
+  code += '        <div class="project-featured-badge">' + escapeHTML(badge) + '</div>\n';
+  code += '        <div class="project-featured-content">\n';
+  if (reverse) {
+    // reverse: visual on left
+    code += '          <div class="project-featured-visual">\n';
+    code += '            <p style="color:var(--muted);font-size:0.85rem">[此处替换为你的预览 SVG/截图]</p>\n';
+    code += '          </div>\n';
+    code += '          <div class="project-featured-text">\n';
+    code += '            <div class="project-featured-header">\n';
+    code += '              <span class="project-featured-num">' + escapeHTML(number || 'XX') + '</span>\n';
+    code += '              <div>\n';
+    code += '                <h3>' + escapeHTML(title || '标题') + '</h3>\n';
+    if (subtitle) code += '                <p class="project-subtitle">' + escapeHTML(subtitle) + '</p>\n';
+    code += '              </div>\n';
+    code += '            </div>\n';
+    code += '            <p>' + escapeHTML(desc || '描述') + '</p>\n';
+    if (tagsHTML) code += '            <div class="project-tags">\n              ' + tagsHTML + '\n            </div>\n';
+    if (featuresHTML) code += '            <div class="project-features">\n' + featuresHTML + '            </div>\n';
+    if (linksHTML) code += linksHTML;
+    code += '          </div>\n';
+  } else {
+    code += '          <div class="project-featured-text">\n';
+    code += '            <div class="project-featured-header">\n';
+    code += '              <span class="project-featured-num">' + escapeHTML(number || 'XX') + '</span>\n';
+    code += '              <div>\n';
+    code += '                <h3>' + escapeHTML(title || '标题') + '</h3>\n';
+    if (subtitle) code += '                <p class="project-subtitle">' + escapeHTML(subtitle) + '</p>\n';
+    code += '              </div>\n';
+    code += '            </div>\n';
+    code += '            <p>' + escapeHTML(desc || '描述') + '</p>\n';
+    if (tagsHTML) code += '            <div class="project-tags">\n              ' + tagsHTML + '\n            </div>\n';
+    if (featuresHTML) code += '            <div class="project-features">\n' + featuresHTML + '            </div>\n';
+    if (linksHTML) code += linksHTML;
+    code += '          </div>\n';
+    code += '          <div class="project-featured-visual">\n';
+    code += '            <p style="color:var(--muted);font-size:0.85rem">[此处替换为你的预览 SVG/截图]</p>\n';
+    code += '          </div>\n';
+  }
+  code += '        </div>\n';
+  code += '      </div>';
+
+  setOutput('output-featured-project', escapeHTML(code), locationHTML('featured'));
+}
+
+function generateProjectCard() {
+  const number      = document.getElementById('pc-number').value.trim();
+  const title       = document.getElementById('pc-title').value.trim();
+  const desc        = document.getElementById('pc-desc').value.trim();
+  const tags        = document.getElementById('pc-tags').value.trim();
+  const metricsRaw  = document.getElementById('pc-metrics').value.trim();
+  const status      = document.getElementById('pc-status').value.trim();
+  const visualType  = document.getElementById('pc-visual-type').value;
+  const visualLabel = document.getElementById('pc-visual-label').value.trim();
+
+  let tagsHTML = '';
+  if (tags) {
+    const tagList = tags.split(/[,，]/).map(t => t.trim()).filter(Boolean);
+    tagList.forEach(t => { tagsHTML += '<span>' + escapeHTML(t) + '</span>'; });
+  }
+
+  let metricsHTML = '';
+  if (metricsRaw) {
+    const lines = metricsRaw.split('\n').filter(Boolean).slice(0, 3);
+    lines.forEach(line => {
+      const parts = line.split('|').map(p => p.trim());
+      if (parts.length >= 2) {
+        metricsHTML += '              <div class="project-metric"><strong>' + escapeHTML(parts[1]) + '</strong>' + escapeHTML(parts[0]) + '</div>\n';
+      }
+    });
+  }
+
+  let visualBlock = '';
+  if (visualType === 'doc') {
+    visualBlock = '          <div class="project-card-visual project-visual-doc">\n' +
+      '            <div class="mini-doc">\n' +
+      '              <div class="mini-doc-line"></div>\n' +
+      '              <div class="mini-doc-line short"></div>\n' +
+      '              <div class="mini-doc-line"></div>\n' +
+      '            </div>\n' +
+      (visualLabel ? '            <span class="project-visual-label">' + escapeHTML(visualLabel) + '</span>\n' : '') +
+      '          </div>\n';
+  } else if (visualType === 'stats') {
+    visualBlock = '          <div class="project-card-visual project-visual-stats">\n' +
+      '            <div class="mini-scatter">\n' +
+      '              <span class="mini-dot" style="--x:15%;--y:70%"></span>\n' +
+      '              <span class="mini-dot" style="--x:25%;--y:55%"></span>\n' +
+      '              <span class="mini-dot" style="--x:35%;--y:45%"></span>\n' +
+      '              <span class="mini-dot" style="--x:45%;--y:35%"></span>\n' +
+      '              <span class="mini-dot" style="--x:55%;--y:25%"></span>\n' +
+      '              <span class="mini-dot" style="--x:65%;--y:20%"></span>\n' +
+      '              <span class="mini-dot" style="--x:30%;--y:60%"></span>\n' +
+      '              <span class="mini-dot" style="--x:50%;--y:30%"></span>\n' +
+      '              <div class="mini-trendline"></div>\n' +
+      '            </div>\n' +
+      (visualLabel ? '            <span class="project-visual-label">' + escapeHTML(visualLabel) + '</span>\n' : '') +
+      '          </div>\n';
+  }
+
+  let code = '';
+  code += '        <div class="glass-card project-card">\n';
+  if (visualBlock) code += visualBlock;
+  code += '          <div class="project-card-body">\n';
+  code += '            <div class="project-card-header">\n';
+  code += '              <span class="project-num">' + escapeHTML(number || 'XX') + '</span>\n';
+  code += '              <h3>' + escapeHTML(title || '标题') + '</h3>\n';
+  code += '            </div>\n';
+  code += '            <p>' + escapeHTML(desc || '描述') + '</p>\n';
+  if (tagsHTML) code += '            <div class="project-tags">\n              ' + tagsHTML + '\n            </div>\n';
+  if (metricsHTML) code += '            <div class="project-metrics">\n' + metricsHTML + '            </div>\n';
+  if (status) code += '            <span class="project-status">' + escapeHTML(status) + '</span>\n';
+  code += '          </div>\n';
+  code += '        </div>';
+
+  setOutput('output-project-card', escapeHTML(code), locationHTML('project_card'));
+}
+
+function generateSkill() {
+  const name  = document.getElementById('skill-name').value.trim();
+  const pct   = document.getElementById('skill-pct').value;
+  const level = document.getElementById('skill-level').value;
+  const group = document.getElementById('skill-group').value;
+
+  const groupNames = { programming: '编程与工具', methods: '研究方法', domain: '领域知识' };
+  const locKey = 'skill_' + group;
+
+  let code = '';
+  code += '            <div class="skill-item">\n';
+  code += '              <span class="skill-name">' + escapeHTML(name || '技能名称') + '</span>\n';
+  code += '              <div class="skill-bar"><div class="skill-fill" style="width:' + pct + '%"></div></div>\n';
+  code += '              <span class="skill-level">' + escapeHTML(level) + '</span>\n';
+  code += '            </div>';
+
+  setOutput('output-skill', escapeHTML(code), locationHTML(locKey));
+}
+
+function generateHeroKeyword() {
+  const text = document.getElementById('hk-text').value.trim();
+  let code = '        <span class="hero-keyword">' + escapeHTML(text || '关键词') + '</span>';
+  setOutput('output-hero-keyword', escapeHTML(code), locationHTML('hero_keyword'));
+}
+</script>
+
+</body>
+</html>
