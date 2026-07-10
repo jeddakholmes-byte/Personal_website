@@ -300,24 +300,24 @@
           <div class="pub-cite-header">
             <span class="pub-cite-label">引用格式</span>
             <div class="pub-cite-controls">
-              <div class="cite-format-select">
+              <div class="cite-format-select" id="citeFormatSelect">
                 <button class="cite-format-btn" id="citeFormatBtn" aria-haspopup="listbox" aria-expanded="false">
                   <span id="citeFormatLabel">GB/T 7714</span>
                   <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
-                <ul class="cite-format-dropdown" id="citeFormatDropdown" role="listbox" hidden>
-                  <li role="option" data-format="gbt" class="cite-format-option active">GB/T 7714</li>
-                  <li role="option" data-format="mla" class="cite-format-option">MLA (9th ed.)</li>
-                  <li role="option" data-format="apa" class="cite-format-option">APA (7th ed.)</li>
+                <ul class="cite-format-dropdown" id="citeFormatDropdown" role="listbox" style="display:none">
+                  <li role="option" class="cite-format-option active" onclick="switchCiteFormat('gbt')">GB/T 7714</li>
+                  <li role="option" class="cite-format-option" onclick="switchCiteFormat('mla')">MLA (9th ed.)</li>
+                  <li role="option" class="cite-format-option" onclick="switchCiteFormat('apa')">APA (7th ed.)</li>
                 </ul>
               </div>
-              <button class="cite-copy-btn" id="citeCopyBtn" title="复制引用">
+              <button class="cite-copy-btn" id="citeCopyBtn" title="复制引用" onclick="copyCitation()">
                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
                 <span>复制</span>
               </button>
             </div>
           </div>
-          <code class="pub-cite-text" id="citeText" data-format="gbt">李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.</code>
+          <code class="pub-cite-text" id="citeText">李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.</code>
         </div>
 
         <div class="pub-links">

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFadeInObserver();
   initSkillBars();
   initAbstractToggle();
-  initCiteFormat();
+  initCiteFormatDropdown();
   initCursorGlow();
   initCardSpotlight();
 });
@@ -398,96 +398,92 @@ function initTheme() {
   syncIcon();
 }
 
-/* --- Citation Format Switcher (CNKI-style) --- */
-function initCiteFormat() {
-  const citeText = document.getElementById('citeText');
-  const formatBtn = document.getElementById('citeFormatBtn');
-  const formatLabel = document.getElementById('citeFormatLabel');
-  const dropdown = document.getElementById('citeFormatDropdown');
-  const copyBtn = document.getElementById('citeCopyBtn');
-  if (!citeText || !formatBtn || !dropdown) return;
+/* --- Citation Format Dropdown Toggle (toggle only) ---
+   switchCiteFormat() and copyCitation() are called via onclick in HTML   */
+function initCiteFormatDropdown() {
+  const btn = document.getElementById('citeFormatBtn');
+  const dd = document.getElementById('citeFormatDropdown');
+  if (!btn || !dd) return;
 
-  const citations = {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = dd.style.display === 'block';
+    dd.style.display = open ? 'none' : 'block';
+    btn.setAttribute('aria-expanded', String(!open));
+  });
+
+  // Close on outside click
+  document.addEventListener('click', () => {
+    if (dd.style.display === 'block') {
+      dd.style.display = 'none';
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
+/* --- Global: switch citation format (called by onclick on <li>) --- */
+function switchCiteFormat(format) {
+  const citeText = document.getElementById('citeText');
+  const label = document.getElementById('citeFormatLabel');
+  const dd = document.getElementById('citeFormatDropdown');
+  const btn = document.getElementById('citeFormatBtn');
+
+  const data = {
     gbt: '李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.',
     mla: 'Li, Yan, Chengzhe Fu, and Chaowei Qiu. "Factors Influencing Green Transport Mobility in Shenzhen-Hong Kong Cross-Border Commuting: Evidence from the High-Speed Rail \'Flexible Pass\' Policy." 全球ESG创新学报, no. 1, 2026.',
     apa: 'Li, Y., Fu, C., & Qiu, C. (2026). Factors influencing green transport mobility in Shenzhen-Hong Kong cross-border commuting: Evidence from the high-speed rail "flexible pass" policy. 全球ESG创新学报, (1).'
   };
-
   const labels = { gbt: 'GB/T 7714', mla: 'MLA (9th ed.)', apa: 'APA (7th ed.)' };
 
-  function setFormat(format) {
-    citeText.textContent = citations[format];
-    citeText.setAttribute('data-format', format);
-    if (formatLabel) formatLabel.textContent = labels[format];
+  if (citeText) citeText.textContent = data[format];
+  if (label) label.textContent = labels[format];
 
-    dropdown.querySelectorAll('.cite-format-option').forEach(opt => {
-      opt.classList.toggle('active', opt.getAttribute('data-format') === format);
+  // Update active marker in dropdown
+  if (dd) {
+    dd.querySelectorAll('.cite-format-option').forEach(opt => {
+      const href = opt.getAttribute('onclick') || '';
+      opt.classList.toggle('active', href.includes("'" + format + "'"));
     });
   }
 
-  // Toggle dropdown
-  formatBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = dropdown.hidden === false;
-    dropdown.hidden = isOpen;
-    formatBtn.setAttribute('aria-expanded', !isOpen);
-  });
+  // Close dropdown
+  if (dd) dd.style.display = 'none';
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
 
-  // Select format
-  dropdown.addEventListener('click', (e) => {
-    const option = e.target.closest('.cite-format-option');
-    if (!option) return;
-    const format = option.getAttribute('data-format');
-    setFormat(format);
-    dropdown.hidden = true;
-    formatBtn.setAttribute('aria-expanded', 'false');
-  });
+/* --- Global: copy citation to clipboard (called by onclick on button) --- */
+function copyCitation() {
+  const citeText = document.getElementById('citeText');
+  const btn = document.getElementById('citeCopyBtn');
+  if (!citeText || !btn) return;
 
-  // Close dropdown on outside click
-  document.addEventListener('click', () => {
-    if (!dropdown.hidden) {
-      dropdown.hidden = true;
-      formatBtn.setAttribute('aria-expanded', 'false');
-    }
-  });
+  const span = btn.querySelector('span');
+  const fallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = citeText.textContent;
+    ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.classList.add('copied');
+    if (span) span.textContent = '已复制';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      if (span) span.textContent = '复制';
+    }, 1800);
+  };
 
-  // Keyboard support
-  formatBtn.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !dropdown.hidden) {
-      dropdown.hidden = true;
-      formatBtn.setAttribute('aria-expanded', 'false');
-      formatBtn.focus();
-    }
-  });
-
-  // Copy to clipboard
-  if (copyBtn) {
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(citeText.textContent);
-        copyBtn.classList.add('copied');
-        copyBtn.querySelector('span').textContent = '已复制';
-        setTimeout(() => {
-          copyBtn.classList.remove('copied');
-          copyBtn.querySelector('span').textContent = '复制';
-        }, 1800);
-      } catch {
-        // Fallback for older browsers
-        const textarea = document.createElement('textarea');
-        textarea.value = citeText.textContent;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        copyBtn.classList.add('copied');
-        copyBtn.querySelector('span').textContent = '已复制';
-        setTimeout(() => {
-          copyBtn.classList.remove('copied');
-          copyBtn.querySelector('span').textContent = '复制';
-        }, 1800);
-      }
-    });
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(citeText.textContent).then(() => {
+      btn.classList.add('copied');
+      if (span) span.textContent = '已复制';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        if (span) span.textContent = '复制';
+      }, 1800);
+    }).catch(fallback);
+  } else {
+    fallback();
   }
 }
