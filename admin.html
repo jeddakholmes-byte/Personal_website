@@ -116,10 +116,8 @@
     }
 
     html.theme-transition,
-    html.theme-transition *,
-    html.theme-transition *::before,
-    html.theme-transition *::after {
-      transition: background-color 300ms ease, color 200ms ease, border-color 300ms ease !important;
+    html.theme-transition body {
+      transition: background-color 200ms ease, color 180ms ease;
     }
 
     *,*::before,*::after { box-sizing: border-box; }
@@ -881,29 +879,26 @@
 
   const mq = window.matchMedia('(prefers-color-scheme: dark)');
 
-  function applyTheme(theme) {
-    var html = document.documentElement;
-    html.classList.add('theme-transition');
-    html.setAttribute('data-theme', theme);
-    setTimeout(function(){ html.classList.remove('theme-transition'); }, 320);
-    var isDark = theme === 'dark';
+  function syncIcon() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     if (iconLight) iconLight.style.display = isDark ? 'none' : '';
     if (iconDark) iconDark.style.display = isDark ? '' : 'none';
   }
 
-  function syncTheme() {
-    var stored = localStorage.getItem('theme') || 'system';
-    if (stored === 'light') { applyTheme('light'); return; }
-    if (stored === 'dark')  { applyTheme('dark');  return; }
-    applyTheme(mq.matches ? 'dark' : 'light');
+  function applyTheme(theme) {
+    var html = document.documentElement;
+    if (html.getAttribute('data-theme') === theme) { syncIcon(); return; }
+    html.classList.add('theme-transition');
+    html.setAttribute('data-theme', theme);
+    syncIcon();
+    setTimeout(function(){ html.classList.remove('theme-transition'); }, 220);
   }
 
   toggle.addEventListener('click', function() {
     var current = localStorage.getItem('theme') || 'system';
     var next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
     localStorage.setItem('theme', next);
-    if (next === 'system') applyTheme(mq.matches ? 'dark' : 'light');
-    else applyTheme(next);
+    applyTheme(next === 'system' ? (mq.matches ? 'dark' : 'light') : next);
   });
 
   mq.addEventListener('change', function() {
@@ -912,7 +907,8 @@
     }
   });
 
-  syncTheme();
+  // On load: theme already set by inline <script>. Only sync icon.
+  syncIcon();
 })();
 
 /* ============================================

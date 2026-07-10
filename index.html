@@ -39,6 +39,10 @@
         <a href="#projects">项目</a>
         <a href="#skills">技能</a>
         <a href="#contact">联系</a>
+        <a href="admin.html" class="nav-admin" title="内容管理 · 代码生成器">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          管理
+        </a>
       </div>
       <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换亮/暗主题">
         <svg id="themeIconLight" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -54,53 +58,72 @@
   <section class="hero" id="hero">
     <div class="hero-bg"></div>
     <div class="hero-content">
-      <div class="hero-avatar">
-        <div class="avatar-placeholder">邱</div>
+      <div class="hero-main-row">
+        <div class="hero-left">
+          <div class="hero-profile">
+            <div class="hero-avatar">
+              <div class="avatar-placeholder">邱</div>
+            </div>
+            <div class="hero-name-block">
+              <h1 class="hero-name">
+                <span class="hero-name-cn">邱超伟</span>
+                <span class="hero-name-en">Chaowei Qiu</span>
+              </h1>
+              <p class="hero-tagline" id="typewriter"></p>
+            </div>
+          </div>
+          <p class="hero-bio">我把心理学训练、政策问题和数据工具放在一起，关注公共政策如何被不同群体理解、回应和转化为实际行为。当前重点包括政策反馈、行为干预、跨境治理、教育数据分析与计算文本方法。</p>
+        </div>
+        <div class="hero-right">
+          <p class="hero-subtitle">计算社会科学 · 公共政策评估 · 行为数据分析 · 跨境治理</p>
+          <div class="hero-keywords">
+            <span class="hero-keyword">政策反馈</span>
+            <span class="hero-keyword">行为干预</span>
+            <span class="hero-keyword">跨境治理</span>
+            <span class="hero-keyword">因果推断</span>
+            <span class="hero-keyword">计算文本分析</span>
+            <!-- INSERT: hero_keyword — 在此注释之后粘贴新的 Hero 关键词 -->
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span class="hero-stat-num">1</span>
+              <span class="hero-stat-label">已发表论文</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-num">4</span>
+              <span class="hero-stat-label">研究项目</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-num">19.8K<span class="hero-stat-suffix">+</span></span>
+              <span class="hero-stat-label">学生数据</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-num">251</span>
+              <span class="hero-stat-label">合作学校</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <h1 class="hero-name">
-        <span class="hero-name-cn">邱超伟</span>
-        <span class="hero-name-en">Chaowei Qiu</span>
-      </h1>
-      <p class="hero-tagline" id="typewriter"></p>
-      <p class="hero-subtitle">计算社会科学 · 公共政策评估 · 行为数据分析 · 跨境治理</p>
-      <div class="hero-keywords">
-        <span class="hero-keyword">政策反馈</span>
-        <span class="hero-keyword">行为干预</span>
-        <span class="hero-keyword">跨境治理</span>
-        <span class="hero-keyword">因果推断</span>
-        <span class="hero-keyword">计算文本分析</span>
-        <!-- INSERT: hero_keyword — 在此注释之后粘贴新的 Hero 关键词 -->
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <span class="hero-stat-num">1</span>
-          <span class="hero-stat-label">已发表论文</span>
+      <div class="hero-bottom-row">
+        <div class="hero-links">
+          <a href="https://github.com/jeddakholmes-byte" target="_blank" class="hero-link" rel="noopener">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="#publications" class="hero-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            发表论文
+          </a>
         </div>
-        <div class="hero-stat-sep"></div>
-        <div class="hero-stat">
-          <span class="hero-stat-num">4</span>
-          <span class="hero-stat-label">研究项目</span>
-        </div>
-        <div class="hero-stat-sep"></div>
-        <div class="hero-stat">
-          <span class="hero-stat-num">19.8K<span class="hero-stat-suffix">+</span></span>
-          <span class="hero-stat-label">学生数据</span>
-        </div>
-        <div class="hero-stat-sep"></div>
-        <div class="hero-stat">
-          <span class="hero-stat-num">251</span>
-          <span class="hero-stat-label">合作学校</span>
-        </div>
-      </div>
-      <p class="hero-bio">我把心理学训练、政策问题和数据工具放在一起，关注公共政策如何被不同群体理解、回应和转化为实际行为。当前重点包括政策反馈、行为干预、跨境治理、教育数据分析与计算文本方法。</p>
-      <div class="hero-links">
-        <a href="https://github.com/jeddakholmes-byte" target="_blank" class="hero-link" rel="noopener">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          GitHub
-        </a>
-        <a href="#publications" class="hero-link">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-          发表论文
+        <a href="admin.html" class="hero-admin-card">
+          <span class="hero-admin-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </span>
+          <span class="hero-admin-text">
+            <strong>内容管理</strong>
+            <small>表单生成代码 · 一键更新页面</small>
+          </span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="hero-admin-arrow"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
       <a href="#about" class="hero-scroll" aria-label="向下滚动">
@@ -274,8 +297,27 @@
         </div>
 
         <div class="pub-cite">
-          <span class="pub-cite-label">引用格式</span>
-          <code class="pub-cite-text">李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.</code>
+          <div class="pub-cite-header">
+            <span class="pub-cite-label">引用格式</span>
+            <div class="pub-cite-controls">
+              <div class="cite-format-select">
+                <button class="cite-format-btn" id="citeFormatBtn" aria-haspopup="listbox" aria-expanded="false">
+                  <span id="citeFormatLabel">GB/T 7714</span>
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <ul class="cite-format-dropdown" id="citeFormatDropdown" role="listbox" hidden>
+                  <li role="option" data-format="gbt" class="cite-format-option active">GB/T 7714</li>
+                  <li role="option" data-format="mla" class="cite-format-option">MLA (9th ed.)</li>
+                  <li role="option" data-format="apa" class="cite-format-option">APA (7th ed.)</li>
+                </ul>
+              </div>
+              <button class="cite-copy-btn" id="citeCopyBtn" title="复制引用">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                <span>复制</span>
+              </button>
+            </div>
+          </div>
+          <code class="pub-cite-text" id="citeText" data-format="gbt">李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.</code>
         </div>
 
         <div class="pub-links">
@@ -601,7 +643,11 @@
   <footer class="footer">
     <div class="container">
       <p>&copy; 2026 邱超伟 Chaowei Qiu. Personal academic website hosted on GitHub Pages.</p>
-      <p style="margin-top:6px;font-size:0.78rem"><a href="admin.html" style="color:var(--muted);text-decoration:none">内容管理</a></p>
+      <p style="margin-top:8px;font-size:0.82rem">
+        <a href="admin.html" style="color:var(--ink-soft);text-decoration:none;border-bottom:1px dashed var(--line);padding-bottom:2px;transition:color 0.2s,border-color 0.2s" onmouseover="this.style.color='var(--blue)';this.style.borderColor='var(--blue)'" onmouseout="this.style.color='';this.style.borderColor=''">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>内容管理 · 代码生成器
+        </a>
+      </p>
     </div>
   </footer>
 

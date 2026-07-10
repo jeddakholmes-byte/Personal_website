@@ -26,10 +26,11 @@ https://jeddakholmes-byte.github.io/Personal_website
 ```text
 Personal_website/
 ├── index.html        # 页面内容，新增履历主要改这里
+├── admin.html        # 内容管理工具：表单填入 → 生成 HTML 代码
 ├── css/
-│   └── style.css     # 页面样式、布局、响应式规则
+│   └── style.css     # 页面样式、布局、响应式规则、亮/暗主题变量
 ├── js/
-│   └── main.js       # 导航、滚动、摘要展开、技能条等交互
+│   └── main.js       # 导航、滚动、主题切换、摘要展开、技能条等交互
 ├── assets/           # 图片、PDF、头像、简历等静态文件
 └── README.md         # 维护说明
 ```
@@ -61,7 +62,38 @@ python3 -m http.server 8080
 2. 每次只改一个部分，比如只改论文、只改项目、只改教育背景。
 3. 改完后先本地预览，再推送到 GitHub。
 4. 手机和电脑都要检查，尤其看标题、按钮、项目卡片有没有挤出屏幕。
-5. 没有来源的经历不要写成确定事实，可以写成“进行中”“参与”“拟关注方向”。
+5. 没有来源的经历不要写成确定事实，可以写成"进行中""参与""拟关注方向"。
+
+## 内容管理工具（推荐使用）
+
+`admin.html` 是一个表单驱动的 HTML 代码生成器。填入内容后自动生成符合页面风格、可直接粘贴到 `index.html` 的代码片段，并指示精确粘贴位置。
+
+### 如何使用
+
+1. 浏览器打开 `admin.html`（可从主页导航栏「管理」或底部 footer 链接进入）
+2. 顶部标签页选择要更新的板块：教育经历、研究方向、发表论文、精选项目、项目卡片、技能条目、Hero关键词
+3. 填写表单，点击「生成代码」
+4. 点击「复制」，在 `index.html` 中搜索面板右侧指示的 `<!-- INSERT: xxx -->` 注释
+5. 在该注释之后粘贴代码
+6. 本地预览确认 → `git commit && git push`
+
+### INSERT 标记系统
+
+`index.html` 中每个内容板块末尾都有一个 HTML 注释标记，作为粘贴锚点：
+
+| 标记 | 位置 |
+|------|------|
+| `<!-- INSERT: education_item -->` | 教育背景 · 最后一条 timeline-item 之后 |
+| `<!-- INSERT: research_card -->` | 研究方向 · 最后一张 research-card 之后 |
+| `<!-- INSERT: publication_card -->` | 发表论文 · 最后一篇 pub-card 之后 |
+| `<!-- INSERT: featured_project -->` | 项目作品 · 最后一个精选项目之后 |
+| `<!-- INSERT: project_card -->` | 项目作品 · 最后一张小卡片之后 |
+| `<!-- INSERT: skill_programming -->` | 技能栈 · 编程与工具分组 |
+| `<!-- INSERT: skill_methods -->` | 技能栈 · 研究方法分组 |
+| `<!-- INSERT: skill_domain -->` | 技能栈 · 领域知识分组 |
+| `<!-- INSERT: hero_keyword -->` | Hero 区域 · 最后一枚关键词标签之后 |
+
+> 每次通过 admin.html 生成的代码都会注明对应的 INSERT 标记，在 `index.html` 中直接搜索即可定位。
 
 ## 如何添加教育经历
 
@@ -371,6 +403,42 @@ assets/Chaowei_Qiu_CV.pdf
 - 只换一个主色，不要同时换很多颜色。
 - 不建议改成大面积紫色、荧光渐变或纯黑科技风。
 
+### 暗色主题变量
+
+暗色主题变量同样在 `css/style.css` 中，通过 `[data-theme="dark"]` 选择器覆盖：
+
+```css
+[data-theme="dark"] {
+  --bg: #1a1d23;
+  --paper: #252830;
+  --ink: #e8e4dd;
+  --blue: #7eb8d0;
+  --green: #7db8a0;
+  --gold: #c9a04c;
+}
+```
+
+如果调整亮色主题的主色，建议也同步调整暗色主题中对应的变量，保持两个主题的色彩关系一致。
+
+## 亮/暗主题切换
+
+页面支持三态主题切换，按钮位于导航栏右侧（太阳/月亮图标）。
+
+- **跟随系统**（默认）：自动读取操作系统亮/暗偏好
+- **亮色**：手动锁定亮色主题
+- **暗色**：手动锁定暗色主题
+
+点击按钮在三态之间循环。用户选择会保存在浏览器 `localStorage` 中，刷新后保持。`index.html` 和 `admin.html` 共用同一偏好键，主题状态在两个页面之间保持一致。
+
+### 技术细节
+
+- `<head>` 中的内联脚本在页面渲染前读取偏好并设置 `data-theme` 属性，防止页面闪烁（FOUC）
+- CSS 通过 `[data-theme="dark"]` 重定义变量 + 少量硬编码颜色覆盖来实现暗色
+- 切换时有 200ms 的 `background-color` + `color` 过渡，避免突兀
+- 监听 `prefers-color-scheme` 媒体查询，在「跟随系统」模式下自动响应 OS 主题变化
+
+如需禁用暗色主题，在 `index.html` 的 `<html>` 标签中移除 `data-theme` 属性并删除 `<head>` 中的内联脚本即可。同时删除导航栏中的 `.theme-toggle` 按钮。
+
 ## 手机和电脑检查清单
 
 每次修改后检查这些点：
@@ -392,7 +460,7 @@ assets/Chaowei_Qiu_CV.pdf
 ```bash
 cd /Users/leon/Documents/GitHub/Personal_website
 git status
-git add index.html css/style.css js/main.js README.md
+git add index.html admin.html css/style.css js/main.js README.md
 git commit -m "Polish academic homepage"
 git push
 ```

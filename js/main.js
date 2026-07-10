@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFadeInObserver();
   initSkillBars();
   initAbstractToggle();
+  initCiteFormat();
   initCursorGlow();
   initCardSpotlight();
 });
@@ -357,32 +358,26 @@ function initTheme() {
 
   const mq = window.matchMedia('(prefers-color-scheme: dark)');
 
-  function getResolvedTheme() {
-    const stored = localStorage.getItem('theme') || 'system';
-    if (stored === 'light') return 'light';
-    if (stored === 'dark') return 'dark';
-    return mq.matches ? 'dark' : 'light';
-  }
-
-  function applyTheme(theme) {
-    const html = document.documentElement;
-    // Brief transition class for smooth switch
-    html.classList.add('theme-transition');
-    html.setAttribute('data-theme', theme);
-    setTimeout(() => html.classList.remove('theme-transition'), 320);
-
-    // Toggle icon
-    const isDark = theme === 'dark';
+  function syncIcon() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     if (iconLight) iconLight.style.display = isDark ? 'none' : '';
     if (iconDark) iconDark.style.display = isDark ? '' : 'none';
   }
 
-  function syncTheme() {
+  function applyTheme(theme) {
+    const html = document.documentElement;
+    if (html.getAttribute('data-theme') === theme) { syncIcon(); return; }
+    html.classList.add('theme-transition');
+    html.setAttribute('data-theme', theme);
+    syncIcon();
+    setTimeout(() => html.classList.remove('theme-transition'), 220);
+  }
+
+  function resolveTheme() {
     const stored = localStorage.getItem('theme') || 'system';
-    if (stored === 'light') { applyTheme('light'); return; }
-    if (stored === 'dark')  { applyTheme('dark');  return; }
-    // system — follow OS
-    applyTheme(mq.matches ? 'dark' : 'light');
+    if (stored === 'light') return 'light';
+    if (stored === 'dark')  return 'dark';
+    return mq.matches ? 'dark' : 'light';
   }
 
   // Cycle: system → light → dark → system
@@ -390,20 +385,109 @@ function initTheme() {
     const current = localStorage.getItem('theme') || 'system';
     const next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
     localStorage.setItem('theme', next);
+    applyTheme(next === 'system' ? (mq.matches ? 'dark' : 'light') : next);
+  });
 
-    if (next === 'system') {
+  mq.addEventListener('change', () => {
+    if ((localStorage.getItem('theme') || 'system') === 'system') {
       applyTheme(mq.matches ? 'dark' : 'light');
-    } else {
-      applyTheme(next);
     }
   });
 
-  // Listen for OS theme changes (only when in system mode)
-  mq.addEventListener('change', () => {
-    const stored = localStorage.getItem('theme') || 'system';
-    if (stored === 'system') applyTheme(mq.matches ? 'dark' : 'light');
+  // On load: theme already set by inline <script>. Only sync icon, no re-apply.
+  syncIcon();
+}
+
+/* --- Citation Format Switcher (CNKI-style) --- */
+function initCiteFormat() {
+  const citeText = document.getElementById('citeText');
+  const formatBtn = document.getElementById('citeFormatBtn');
+  const formatLabel = document.getElementById('citeFormatLabel');
+  const dropdown = document.getElementById('citeFormatDropdown');
+  const copyBtn = document.getElementById('citeCopyBtn');
+  if (!citeText || !formatBtn || !dropdown) return;
+
+  const citations = {
+    gbt: '李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.',
+    mla: 'Li, Yan, Chengzhe Fu, and Chaowei Qiu. "Factors Influencing Green Transport Mobility in Shenzhen-Hong Kong Cross-Border Commuting: Evidence from the High-Speed Rail \'Flexible Pass\' Policy." 全球ESG创新学报, no. 1, 2026.',
+    apa: 'Li, Y., Fu, C., & Qiu, C. (2026). Factors influencing green transport mobility in Shenzhen-Hong Kong cross-border commuting: Evidence from the high-speed rail "flexible pass" policy. 全球ESG创新学报, (1).'
+  };
+
+  const labels = { gbt: 'GB/T 7714', mla: 'MLA (9th ed.)', apa: 'APA (7th ed.)' };
+
+  function setFormat(format) {
+    citeText.textContent = citations[format];
+    citeText.setAttribute('data-format', format);
+    if (formatLabel) formatLabel.textContent = labels[format];
+
+    dropdown.querySelectorAll('.cite-format-option').forEach(opt => {
+      opt.classList.toggle('active', opt.getAttribute('data-format') === format);
+    });
+  }
+
+  // Toggle dropdown
+  formatBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = dropdown.hidden === false;
+    dropdown.hidden = isOpen;
+    formatBtn.setAttribute('aria-expanded', !isOpen);
   });
 
-  // Sync on load (already done by inline script, but ensure icon is correct)
-  syncTheme();
+  // Select format
+  dropdown.addEventListener('click', (e) => {
+    const option = e.target.closest('.cite-format-option');
+    if (!option) return;
+    const format = option.getAttribute('data-format');
+    setFormat(format);
+    dropdown.hidden = true;
+    formatBtn.setAttribute('aria-expanded', 'false');
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', () => {
+    if (!dropdown.hidden) {
+      dropdown.hidden = true;
+      formatBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Keyboard support
+  formatBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !dropdown.hidden) {
+      dropdown.hidden = true;
+      formatBtn.setAttribute('aria-expanded', 'false');
+      formatBtn.focus();
+    }
+  });
+
+  // Copy to clipboard
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(citeText.textContent);
+        copyBtn.classList.add('copied');
+        copyBtn.querySelector('span').textContent = '已复制';
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.querySelector('span').textContent = '复制';
+        }, 1800);
+      } catch {
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea');
+        textarea.value = citeText.textContent;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        copyBtn.classList.add('copied');
+        copyBtn.querySelector('span').textContent = '已复制';
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.querySelector('span').textContent = '复制';
+        }, 1800);
+      }
+    });
+  }
 }
