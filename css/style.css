@@ -179,6 +179,18 @@
   background: rgba(37, 40, 48, 0.78);
 }
 
+[data-theme="dark"] .contact-draft {
+  background: rgba(37, 40, 48, 0.58);
+}
+
+[data-theme="dark"] .contact-draft input,
+[data-theme="dark"] .contact-draft select,
+[data-theme="dark"] .contact-draft textarea {
+  background: rgba(26, 29, 35, 0.78);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--ink);
+}
+
 [data-theme="dark"] .footer {
   background: rgba(37, 40, 48, 0.6);
 }
@@ -1705,6 +1717,108 @@ svg {
   overflow-wrap: anywhere;
 }
 
+.contact-draft {
+  display: grid;
+  gap: 18px;
+  margin-top: 22px;
+  padding: clamp(18px, 3vw, 24px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 252, 0.62);
+}
+
+.contact-draft-head {
+  display: grid;
+  gap: 6px;
+}
+
+.contact-draft-kicker {
+  color: var(--gold);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.contact-draft h3 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+}
+
+.contact-draft p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.contact-draft-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.contact-draft label {
+  display: grid;
+  gap: 6px;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.contact-draft input,
+.contact-draft select,
+.contact-draft textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font: 500 0.92rem var(--font-sans);
+}
+
+.contact-draft textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.draft-wide,
+.contact-draft-actions,
+.contact-draft-output {
+  grid-column: 1 / -1;
+}
+
+.contact-draft-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.contact-draft-actions .btn {
+  min-height: 40px;
+}
+
+.contact-draft-actions .copied {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.contact-draft-actions .copy-failed {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+.contact-draft-output {
+  min-height: 180px;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
 .back-to-top {
   position: fixed;
   right: 22px;
@@ -1980,6 +2094,10 @@ svg {
   .workflow-step + .workflow-step {
     border-left: 0;
     border-top: 1px solid var(--line);
+  }
+
+  .contact-draft-form {
+    grid-template-columns: 1fr;
   }
 
   .nav-links a:nth-last-child(-n + 2) {

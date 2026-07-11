@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSkillBars();
   initAbstractToggle();
   initCitationFormat();
+  initContactDraft();
   initCursorGlow();
   initCardSpotlight();
 });
@@ -223,7 +224,7 @@ function initFadeInObserver() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const targets = document.querySelectorAll(
-    '.glass-card, .section-title, .about-intro, .timeline-item, .project-featured, .contact-intro'
+    '.glass-card, .section-title, .about-intro, .timeline-item, .project-featured, .contact-intro, .contact-draft'
   );
 
   const observer = new IntersectionObserver((entries) => {
@@ -467,6 +468,118 @@ function initCitationFormat() {
       showCopyState('复制失败', false);
     }
   });
+}
+
+/* --- Contact draft helper ---
+   Public-facing helper for visitors. It only builds text locally and never
+   sends form content anywhere unless the user opens their own email client. */
+function initContactDraft() {
+  const form = document.getElementById('contactDraftForm');
+  const output = document.getElementById('contactDraftOutput');
+  const mailLink = document.getElementById('draftMailLink');
+  const copyBtn = document.getElementById('copyDraftBtn');
+  const purposeInput = document.getElementById('draftPurpose');
+  const topicInput = document.getElementById('draftTopic');
+  const senderInput = document.getElementById('draftSender');
+  const contextInput = document.getElementById('draftContext');
+  if (!form || !output || !mailLink || !purposeInput || !topicInput || !senderInput || !contextInput) return;
+
+  const email = 'jeddakholmes@gmail.com';
+  const purposes = {
+    research: {
+      label: '研究交流',
+      focus: '政策反馈、行为数据或计算社会科学相关问题',
+      ask: '我想和你交流一下这个问题，看是否有进一步讨论或合作的空间。'
+    },
+    data: {
+      label: '数据分析/报告工具',
+      focus: '数据清洗、可视化或自动化报告',
+      ask: '我想了解你的相关经验，也想看看这个场景是否适合做成更稳定的分析流程。'
+    },
+    project: {
+      label: '项目合作',
+      focus: '政策评估、教育数据或跨境治理相关项目',
+      ask: '如果你有时间，希望能进一步沟通项目目标、资料边界和可能分工。'
+    },
+    citation: {
+      label: '论文引用或转载',
+      focus: '论文引用、资料转载或研究材料核对',
+      ask: '想请你确认一下引用或使用方式是否合适。'
+    }
+  };
+
+  function clean(value) {
+    return value.trim().replace(/\s+/g, ' ');
+  }
+
+  function buildDraft() {
+    const purpose = purposes[purposeInput.value] || purposes.research;
+    const topic = clean(topicInput.value) || purpose.focus;
+    const sender = clean(senderInput.value);
+    const context = clean(contextInput.value);
+    const subject = `${purpose.label}：${topic}`;
+    const body = [
+      '超伟你好：',
+      '',
+      `我在你的个人主页看到你关于${purpose.focus}的经历，想就“${topic}”和你联系。`,
+      context ? `我的基本情况/想讨论的内容是：${context}` : '我目前还在整理材料，先简单说明来意，后续可以再补充更完整的背景。',
+      purpose.ask,
+      '',
+      '如果方便，期待你的回复。',
+      sender ? `\n${sender}` : ''
+    ].join('\n');
+
+    return { subject, body };
+  }
+
+  function updateMailLink(subject, body) {
+    const params = new URLSearchParams({ subject, body });
+    mailLink.href = `mailto:${email}?${params.toString()}`;
+  }
+
+  function showCopyState(message, success = true) {
+    const original = copyBtn.textContent;
+    copyBtn.textContent = message;
+    copyBtn.classList.toggle('copied', success);
+    copyBtn.classList.toggle('copy-failed', !success);
+    window.setTimeout(() => {
+      copyBtn.textContent = original;
+      copyBtn.classList.remove('copied', 'copy-failed');
+    }, 1600);
+  }
+
+  function copyFallback(text) {
+    output.focus();
+    output.select();
+    return document.execCommand('copy');
+  }
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const { subject, body } = buildDraft();
+    output.value = body;
+    updateMailLink(subject, body);
+  });
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const text = output.value.trim();
+      if (!text || text === '填写上面的信息后，点击“生成草稿”。') {
+        showCopyState('先生成草稿', false);
+        return;
+      }
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else if (!copyFallback(text)) {
+          throw new Error('copy command failed');
+        }
+        showCopyState('已复制');
+      } catch (error) {
+        showCopyState('复制失败', false);
+      }
+    });
+  }
 }
 
 /* --- Cursor Glow (rAF + lerp for smooth trailing) --- */
