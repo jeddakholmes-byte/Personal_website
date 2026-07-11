@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFadeInObserver();
   initSkillBars();
   initAbstractToggle();
+  initCitationFormat();
   initCursorGlow();
   initCardSpotlight();
 });
@@ -284,6 +285,190 @@ function initAbstractToggle() {
   });
 }
 
+/* --- Citation format dropdown ---
+   The menu is fixed-positioned because the publication card clips overflow.
+   Use viewport coordinates only; adding scrollY places it off-screen. */
+function initCitationFormat() {
+  const btn = document.getElementById('citeFormatBtn');
+  const label = document.getElementById('citeFormatLabel');
+  const cite = document.getElementById('citeText');
+  const copy = document.getElementById('citeCopyBtn');
+  if (!btn || !cite) return;
+
+  const formats = {
+    gbt: {
+      label: 'GB/T 7714',
+      text: '李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.'
+    },
+    apa: {
+      label: 'APA 7',
+      text: 'Li, Y., Fu, C., & Qiu, C. (2026). Factors influencing green transport mobility in Shenzhen-Hong Kong cross-border commuting: Evidence from the high-speed rail "Flexible Pass" policy. 全球ESG创新学报, (1).'
+    },
+    mla: {
+      label: 'MLA 9',
+      text: 'Li, Yan, Chengzhe Fu, and Chaowei Qiu. "Factors Influencing Green Transport Mobility in Shenzhen-Hong Kong Cross-Border Commuting: Evidence from the High-Speed Rail \'Flexible Pass\' Policy." 全球ESG创新学报, no. 1, 2026.'
+    },
+    bibtex: {
+      label: 'BibTeX',
+      text: '@article{li2026greenmobility,\n  title = {Factors Influencing Green Transport Mobility in Shenzhen-Hong Kong Cross-border Commuting: Evidence from the High-speed Rail "Flexible Pass" Policy},\n  author = {Li, Yan and Fu, Chengzhe and Qiu, Chaowei},\n  journal = {全球ESG创新学报},\n  year = {2026},\n  number = {1}\n}'
+    }
+  };
+
+  let current = 'gbt';
+  const menu = document.createElement('ul');
+  menu.id = 'citeFormatMenu';
+  menu.className = 'cite-format-dropdown';
+  menu.setAttribute('role', 'listbox');
+  menu.setAttribute('aria-label', '选择引用格式');
+  menu.hidden = true;
+
+  Object.entries(formats).forEach(([key, item]) => {
+    const option = document.createElement('li');
+    option.className = 'cite-format-option';
+    option.setAttribute('role', 'option');
+    option.setAttribute('tabindex', '-1');
+    option.setAttribute('data-fmt', key);
+    option.textContent = item.label;
+    menu.appendChild(option);
+  });
+
+  document.body.appendChild(menu);
+
+  const options = Array.from(menu.querySelectorAll('.cite-format-option'));
+
+  function syncActive() {
+    options.forEach(option => {
+      const isActive = option.dataset.fmt === current;
+      option.classList.toggle('active', isActive);
+      option.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+  }
+
+  function placeMenu() {
+    const rect = btn.getBoundingClientRect();
+    const menuWidth = Math.max(176, rect.width);
+    const margin = 12;
+    const left = Math.min(
+      Math.max(margin, rect.right - menuWidth),
+      window.innerWidth - menuWidth - margin
+    );
+
+    menu.style.minWidth = `${menuWidth}px`;
+    menu.style.top = `${rect.bottom + 6}px`;
+    menu.style.left = `${left}px`;
+  }
+
+  function showMenu() {
+    placeMenu();
+    menu.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    syncActive();
+  }
+
+  function hideMenu() {
+    menu.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function chooseFormat(format) {
+    if (!formats[format]) return;
+    current = format;
+    cite.textContent = formats[format].text;
+    if (label) label.textContent = formats[format].label;
+    syncActive();
+    hideMenu();
+    btn.focus();
+  }
+
+  btn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (menu.hidden) showMenu();
+    else hideMenu();
+  });
+
+  btn.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowDown' && event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    showMenu();
+    const activeOption = options.find(option => option.dataset.fmt === current) || options[0];
+    activeOption.focus();
+  });
+
+  menu.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const option = event.target.closest('.cite-format-option');
+    if (option) chooseFormat(option.dataset.fmt);
+  });
+
+  menu.addEventListener('keydown', (event) => {
+    const index = options.indexOf(document.activeElement);
+    if (event.key === 'Escape') {
+      hideMenu();
+      btn.focus();
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      const option = document.activeElement.closest('.cite-format-option');
+      if (option) chooseFormat(option.dataset.fmt);
+      return;
+    }
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+    event.preventDefault();
+    const next = event.key === 'ArrowDown'
+      ? (index + 1) % options.length
+      : (index - 1 + options.length) % options.length;
+    options[next].focus();
+  });
+
+  document.addEventListener('click', hideMenu);
+  window.addEventListener('scroll', () => {
+    if (!menu.hidden) placeMenu();
+  }, { passive: true });
+  window.addEventListener('resize', () => {
+    if (!menu.hidden) placeMenu();
+  });
+
+  if (!copy) return;
+
+  function copyFallback(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.cssText = 'position:fixed;left:-9999px;top:0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return ok;
+  }
+
+  function showCopyState(message, success = true) {
+    const span = copy.querySelector('span');
+    copy.classList.toggle('copied', success);
+    copy.classList.toggle('copy-failed', !success);
+    if (span) span.textContent = message;
+    window.setTimeout(() => {
+      copy.classList.remove('copied', 'copy-failed');
+      if (span) span.textContent = '复制';
+    }, 1800);
+  }
+
+  copy.addEventListener('click', async () => {
+    const text = cite.textContent.trim();
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else if (!copyFallback(text)) {
+        throw new Error('copy command failed');
+      }
+      showCopyState('已复制');
+    } catch (error) {
+      showCopyState('复制失败', false);
+    }
+  });
+}
+
 /* --- Cursor Glow (rAF + lerp for smooth trailing) --- */
 function initCursorGlow() {
   const glow = document.querySelector('.cursor-glow');
@@ -373,7 +558,12 @@ function initTheme() {
   }
 
   function resolveTheme() {
-    const stored = localStorage.getItem('theme') || 'system';
+    let stored = 'system';
+    try {
+      stored = localStorage.getItem('theme') || 'system';
+    } catch (error) {
+      stored = 'system';
+    }
     if (stored === 'light') return 'light';
     if (stored === 'dark')  return 'dark';
     return mq.matches ? 'dark' : 'light';
@@ -381,14 +571,29 @@ function initTheme() {
 
   // Cycle: system → light → dark → system
   toggle.addEventListener('click', () => {
-    const current = localStorage.getItem('theme') || 'system';
+    let current = 'system';
+    try {
+      current = localStorage.getItem('theme') || 'system';
+    } catch (error) {
+      current = 'system';
+    }
     const next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
-    localStorage.setItem('theme', next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch (error) {
+      // Ignore storage failures; the visible theme still changes for this page.
+    }
     applyTheme(next === 'system' ? (mq.matches ? 'dark' : 'light') : next);
   });
 
   mq.addEventListener('change', () => {
-    if ((localStorage.getItem('theme') || 'system') === 'system') {
+    let stored = 'system';
+    try {
+      stored = localStorage.getItem('theme') || 'system';
+    } catch (error) {
+      stored = 'system';
+    }
+    if (stored === 'system') {
       applyTheme(mq.matches ? 'dark' : 'light');
     }
   });

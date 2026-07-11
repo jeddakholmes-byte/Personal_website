@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Prevent FOUC: apply saved theme before paint -->
   <script>
-    (function(){var t=localStorage.getItem('theme');if(!t||t==='system'){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)})();
+    (function(){try{var t=localStorage.getItem('theme');if(!t||t==='system'){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','light')}})();
   </script>
   <meta name="description" content="邱超伟 (Chaowei Qiu) — 计算社会科学与公共政策评估方向研究者，关注政策反馈、行为干预、跨境治理、教育数据分析与因果推断。">
   <meta property="og:title" content="邱超伟 | Chaowei Qiu">
@@ -44,11 +44,11 @@
           管理
         </a>
       </div>
-      <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换亮/暗主题">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="切换主题" title="切换亮/暗主题">
         <svg id="themeIconLight" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         <svg id="themeIconDark" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
       </button>
-      <button class="nav-toggle" id="navToggle" aria-label="菜单" aria-expanded="false">
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="菜单" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -103,6 +103,10 @@
               <span class="hero-stat-num">251</span>
               <span class="hero-stat-label">合作学校</span>
             </div>
+          </div>
+          <div class="hero-note">
+            <span>当前主线</span>
+            <strong>用行为数据和文本材料解释政策响应</strong>
           </div>
         </div>
       </div>
@@ -242,6 +246,34 @@
         </div>
         <!-- INSERT: research_card — 在此注释之后粘贴新的研究方向卡片 -->
       </div>
+      <div class="research-workflow glass-card">
+        <div class="workflow-header">
+          <span class="workflow-kicker">Research workflow</span>
+          <h3>从政策问题到可解释证据</h3>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <span class="workflow-num">01</span>
+            <strong>问题界定</strong>
+            <p>先把政策对象、目标群体和实际行为拆开，避免把宏观叙事直接当作研究问题。</p>
+          </div>
+          <div class="workflow-step">
+            <span class="workflow-num">02</span>
+            <strong>资料互证</strong>
+            <p>结合问卷、访谈、公开文本和项目数据，优先说明证据边界，再讨论可能机制。</p>
+          </div>
+          <div class="workflow-step">
+            <span class="workflow-num">03</span>
+            <strong>方法匹配</strong>
+            <p>按问题选择回归、Bootstrap、中介分析、扎根编码或文本分析，而不是为方法找题目。</p>
+          </div>
+          <div class="workflow-step">
+            <span class="workflow-num">04</span>
+            <strong>结果转化</strong>
+            <p>把分析结果整理成论文、政策备忘、数据报告或可复用工具，方便后续验证和复核。</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -295,7 +327,7 @@
           <p class="pub-abstract-text" id="abstractText">
             随着粤港澳大湾区一体化推进，深港跨境轨道交通正从长途城际出行转向短途、高频的日常通勤。广深港高铁"灵活行"政策通过允许旅客在乘车当日多次免费改签车次提升票务弹性，为跨境公共交通公交化提供了治理创新场景。基于ESG视角，本研究将绿色交通流动性界定为通勤者依托相对低碳的公共交通方式，在深港之间实现可负担、可靠、可持续移动的能力。研究采用扎根理论，对21位深港跨境通勤者开展了半结构化访谈，并结合公开网络文本分析进行三角互证，通过开放式、主轴和选择性三级编码逐层提炼影响因素。研究发现，绿色交通流动性不只取决于车次变更便利，还与公共交通服务满意度和公共交通可达性公平密切相关，二者相互交织共同塑造用户对跨境公共交通日常化使用的可行性感知。本研究据此构建ESG视角下深港绿色交通流动性的概念关系框架，并从低碳潜力、交通公平和跨境协同治理三个方面提出政策优化方向。
           </p>
-          <button class="pub-abstract-toggle" id="abstractToggle" aria-expanded="false">展开全部 ↓</button>
+          <button class="pub-abstract-toggle" id="abstractToggle" type="button" aria-expanded="false">展开全部 ↓</button>
         </div>
 
         <div class="pub-cite">
@@ -303,12 +335,12 @@
             <span class="pub-cite-label">引用格式</span>
             <div class="pub-cite-controls">
               <div class="cite-format-select" id="citeFormatSelect">
-                <button class="cite-format-btn" id="citeFormatBtn" aria-haspopup="listbox" aria-expanded="false">
+                <button class="cite-format-btn" id="citeFormatBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="citeFormatMenu">
                   <span id="citeFormatLabel">GB/T 7714</span>
                   <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
               </div>
-              <button class="cite-copy-btn" id="citeCopyBtn" title="复制引用">
+              <button class="cite-copy-btn" id="citeCopyBtn" type="button" title="复制引用" aria-label="复制当前引用格式">
                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
                 <span>复制</span>
               </button>
@@ -632,7 +664,7 @@
   </section>
 
   <!-- Back to Top -->
-  <button class="back-to-top" id="backToTop" aria-label="返回顶部">
+  <button class="back-to-top" id="backToTop" type="button" aria-label="返回顶部">
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
   </button>
 
@@ -649,144 +681,5 @@
   </footer>
 
   <script src="js/main.js"></script>
-  <script>
-// ── Citation format dropdown (inline, runs after DOM fully ready) ──
-(function() {
-  var btn   = document.getElementById('citeFormatBtn');
-  var label = document.getElementById('citeFormatLabel');
-  var cite  = document.getElementById('citeText');
-  var copy  = document.getElementById('citeCopyBtn');
-  if (!btn) return;
-
-  var map = {
-    gbt: '李嫣, 傅承哲, 邱超伟. 深港跨境通勤绿色交通流动性的影响因素研究：以高铁"灵活行"政策为例[J]. 全球ESG创新学报, 2026(1): 总第1期.',
-    mla: 'Li, Yan, Chengzhe Fu, and Chaowei Qiu. "Factors Influencing Green Transport Mobility in Shenzhen-Hong Kong Cross-Border Commuting: Evidence from the High-Speed Rail \'Flexible Pass\' Policy." 全球ESG创新学报, no. 1, 2026.',
-    apa: 'Li, Y., Fu, C., & Qiu, C. (2026). Factors influencing green transport mobility in Shenzhen-Hong Kong cross-border commuting: Evidence from the high-speed rail "flexible pass" policy. 全球ESG创新学报, (1).'
-  };
-  var labs = { gbt: 'GB/T 7714', mla: 'MLA (9th ed.)', apa: 'APA (7th ed.)' };
-  var current = 'gbt';
-
-  // Build dropdown, append to body
-  var dd = document.createElement('ul');
-  dd.className = 'cite-format-dropdown';
-  dd.style.cssText = 'display:none;position:fixed;z-index:99999;margin:0;padding:4px;list-style:none;border:1px solid var(--line-strong, #c8c0b8);border-radius:8px;background:#fff;box-shadow:0 12px 32px rgba(36,86,111,0.16);';
-  Object.keys(labs).forEach(function(k) {
-    var li = document.createElement('li');
-    li.className = 'cite-format-option' + (k === current ? ' active' : '');
-    li.textContent = labs[k];
-    li.setAttribute('data-fmt', k);
-    li.style.cssText = 'padding:8px 12px;border-radius:4px;font-size:0.76rem;cursor:pointer;white-space:nowrap;';
-    if (k === current) li.style.cssText += 'background:rgba(36,86,111,0.1);color:#24566f;font-weight:700;';
-    dd.appendChild(li);
-  });
-  document.body.appendChild(dd);
-
-  function show() {
-    var r = btn.getBoundingClientRect();
-    dd.style.top  = (r.bottom + 4 + window.pageYOffset) + 'px';
-    dd.style.left = (r.right - 170) + 'px';
-    dd.style.minWidth = Math.max(170, r.width) + 'px';
-    dd.style.display = 'block';
-    btn.setAttribute('aria-expanded', 'true');
-  }
-
-  function hide() {
-    dd.style.display = 'none';
-    btn.setAttribute('aria-expanded', 'false');
-  }
-
-  function pick(fmt) {
-    current = fmt;
-    if (cite) cite.textContent = map[fmt];
-    if (label) label.textContent = labs[fmt];
-    var opts = dd.querySelectorAll('.cite-format-option');
-    for (var i = 0; i < opts.length; i++) {
-      var o = opts[i];
-      var isActive = o.getAttribute('data-fmt') === fmt;
-      o.classList.toggle('active', isActive);
-      if (isActive) {
-        o.style.background = 'rgba(36,86,111,0.1)';
-        o.style.color = '#24566f';
-        o.style.fontWeight = '700';
-      } else {
-        o.style.background = '';
-        o.style.color = '';
-        o.style.fontWeight = '';
-      }
-    }
-    hide();
-  }
-
-  // Single click handler
-  btn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    if (dd.style.display === 'block') hide();
-    else show();
-  });
-
-  dd.addEventListener('click', function(e) {
-    e.stopPropagation();
-    var li = e.target.closest('.cite-format-option');
-    if (li) pick(li.getAttribute('data-fmt'));
-  });
-
-  document.addEventListener('click', function() { hide(); });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') hide();
-  });
-
-  window.addEventListener('scroll', function() {
-    if (dd.style.display !== 'block') return;
-    var r = btn.getBoundingClientRect();
-    dd.style.top  = (r.bottom + 4 + window.pageYOffset) + 'px';
-    dd.style.left = (r.right - 170) + 'px';
-  }, { passive: true });
-
-  window.addEventListener('resize', function() {
-    if (dd.style.display !== 'block') return;
-    var r = btn.getBoundingClientRect();
-    dd.style.top  = (r.bottom + 4 + window.pageYOffset) + 'px';
-    dd.style.left = (r.right - 170) + 'px';
-  });
-
-  // Copy button
-  if (copy) {
-    copy.addEventListener('click', function() {
-      var txt = cite ? cite.textContent : '';
-      var span = copy.querySelector('span');
-      var done = function() {
-        copy.classList.add('copied');
-        if (span) span.textContent = '已复制';
-        setTimeout(function() {
-          copy.classList.remove('copied');
-          if (span) span.textContent = '复制';
-        }, 1800);
-      };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(txt).then(done).catch(function() {
-          var ta = document.createElement('textarea');
-          ta.value = txt;
-          ta.style.cssText = 'position:fixed;opacity:0';
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand('copy');
-          document.body.removeChild(ta);
-          done();
-        });
-      } else {
-        var ta = document.createElement('textarea');
-        ta.value = txt;
-        ta.style.cssText = 'position:fixed;opacity:0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        done();
-      }
-    });
-  }
-})();
-</script>
 </body>
 </html>

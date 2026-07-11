@@ -2,10 +2,10 @@
    Scholarly portfolio style, responsive static site. */
 
 :root {
-  --bg: #f7f4ee;
-  --bg-soft: #ede7dc;
-  --paper: #fffdf8;
-  --paper-muted: #f8f1e7;
+  --bg: #f6f8f7;
+  --bg-soft: #e8eef0;
+  --paper: #fffffc;
+  --paper-muted: #eff4f1;
   --ink: #1e2a2f;
   --ink-soft: #4b5960;
   --muted: #768087;
@@ -16,7 +16,7 @@
   --green: #427261;
   --gold: #9b6f2f;
   --red: #9f4f46;
-  --shadow: 0 18px 50px rgba(48, 42, 35, 0.1);
+  --shadow: 0 18px 50px rgba(28, 49, 56, 0.11);
   --radius: 10px;
   --radius-sm: 7px;
   --max-width: 1120px;
@@ -268,7 +268,7 @@ body {
   color: var(--ink);
   background:
     linear-gradient(90deg, rgba(36, 86, 111, 0.035) 1px, transparent 1px),
-    linear-gradient(rgba(36, 86, 111, 0.035) 1px, transparent 1px),
+    linear-gradient(rgba(66, 114, 97, 0.035) 1px, transparent 1px),
     var(--bg);
   background-size: 42px 42px;
   line-height: 1.72;
@@ -283,8 +283,9 @@ body::before {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 16% 4%, rgba(36, 86, 111, 0.12), transparent 34%),
-    radial-gradient(circle at 88% 12%, rgba(66, 114, 97, 0.1), transparent 28%);
+    radial-gradient(circle at 12% 2%, rgba(36, 86, 111, 0.12), transparent 34%),
+    radial-gradient(circle at 88% 10%, rgba(66, 114, 97, 0.1), transparent 28%),
+    radial-gradient(circle at 52% 0%, rgba(155, 111, 47, 0.07), transparent 24%);
   z-index: -1;
 }
 
@@ -447,8 +448,8 @@ svg {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(110deg, rgba(255, 253, 248, 0.82) 0%, rgba(255, 253, 248, 0.38) 48%, rgba(237, 231, 220, 0.52) 100%),
-    radial-gradient(circle at 82% 64%, rgba(155, 111, 47, 0.1), transparent 26%);
+    linear-gradient(112deg, rgba(255, 255, 252, 0.9) 0%, rgba(255, 255, 252, 0.42) 48%, rgba(232, 238, 240, 0.54) 100%),
+    radial-gradient(circle at 82% 64%, rgba(155, 111, 47, 0.08), transparent 26%);
 }
 
 .hero-content {
@@ -612,6 +613,31 @@ svg {
   border-radius: var(--radius);
   background: rgba(255, 253, 248, 0.7);
   overflow: hidden;
+}
+
+.hero-note {
+  display: grid;
+  gap: 4px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--green);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 252, 0.64);
+  text-align: left;
+}
+
+.hero-note span {
+  color: var(--gold);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.hero-note strong {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.45;
 }
 
 .hero-stat {
@@ -988,6 +1014,74 @@ svg {
   min-height: 250px;
 }
 
+.research-workflow {
+  margin-top: 22px;
+  padding: clamp(22px, 4vw, 34px);
+}
+
+.workflow-header {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.workflow-kicker {
+  color: var(--gold);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.workflow-header h3 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+}
+
+.workflow-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.workflow-step {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 190px;
+  padding: 20px;
+  background: rgba(255, 255, 252, 0.6);
+}
+
+.workflow-step + .workflow-step {
+  border-left: 1px solid var(--line);
+}
+
+.workflow-num {
+  color: var(--blue);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.workflow-step strong {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+}
+
+.workflow-step p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
 .research-tag {
   margin-bottom: 18px;
   color: var(--blue);
@@ -1186,7 +1280,7 @@ svg {
 
 .cite-format-dropdown {
   position: fixed;
-  z-index: 9999;
+  z-index: 99999;
   min-width: 170px;
   margin: 0;
   padding: 4px;
@@ -1195,6 +1289,10 @@ svg {
   border-radius: var(--radius-sm);
   background: var(--paper);
   box-shadow: 0 12px 32px rgba(36, 86, 111, 0.16);
+}
+
+.cite-format-dropdown[hidden] {
+  display: none;
 }
 
 .cite-format-option {
@@ -1211,6 +1309,7 @@ svg {
 .cite-format-option:focus-visible {
   background: rgba(36, 86, 111, 0.08);
   color: var(--ink);
+  outline: 0;
 }
 
 .cite-format-option.active {
@@ -1248,8 +1347,15 @@ svg {
   color: #fff;
 }
 
+.cite-copy-btn.copy-failed {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
 .pub-cite-text {
-  white-space: normal;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   color: var(--ink-soft);
   font-family: var(--font-mono);
   font-size: 0.82rem;
@@ -1750,6 +1856,18 @@ svg {
   .project-featured-reverse .project-featured-content {
     grid-template-columns: 1fr;
   }
+
+  .workflow-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .workflow-step:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .workflow-step:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
 }
 
 @media (max-width: 640px) {
@@ -1805,6 +1923,10 @@ svg {
     max-width: 100%;
   }
 
+  .hero-note {
+    text-align: center;
+  }
+
   .hero-bottom-row {
     flex-direction: column;
   }
@@ -1845,6 +1967,19 @@ svg {
 
   .nav-links {
     grid-template-columns: 1fr;
+  }
+
+  .workflow-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-step {
+    min-height: auto;
+  }
+
+  .workflow-step + .workflow-step {
+    border-left: 0;
+    border-top: 1px solid var(--line);
   }
 
   .nav-links a:nth-last-child(-n + 2) {
