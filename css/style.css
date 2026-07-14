@@ -8,13 +8,13 @@
   --paper-muted: #eff4f1;
   --ink: #1e2a2f;
   --ink-soft: #4b5960;
-  --muted: #768087;
+  --muted: #68757b;
   --line: rgba(30, 42, 47, 0.14);
   --line-strong: rgba(30, 42, 47, 0.22);
   --blue: #24566f;
   --blue-soft: #dceaf0;
   --green: #427261;
-  --gold: #9b6f2f;
+  --gold: #916525;
   --red: #9f4f46;
   --shadow: 0 18px 50px rgba(28, 49, 56, 0.11);
   --radius: 10px;
@@ -34,14 +34,14 @@
   --paper-muted: #2a2d35;
   --ink: #e8e4dd;
   --ink-soft: #b8b3aa;
-  --muted: #88837c;
+  --muted: #a39d95;
   --line: rgba(232, 228, 221, 0.10);
   --line-strong: rgba(232, 228, 221, 0.18);
   --blue: #7eb8d0;
   --blue-soft: #1e3440;
   --green: #7db8a0;
   --gold: #c9a04c;
-  --red: #c97068;
+  --red: #a95049;
   --shadow: 0 12px 38px rgba(0, 0, 0, 0.38);
 }
 
@@ -161,6 +161,11 @@
   background: rgba(37, 40, 48, 0.78);
 }
 
+[data-theme="dark"] .hero-note,
+[data-theme="dark"] .workflow-step {
+  background: rgba(37, 40, 48, 0.72);
+}
+
 [data-theme="dark"] .hero-admin-card {
   background: linear-gradient(135deg, rgba(194, 164, 102, 0.08), rgba(194, 164, 102, 0.02));
   border-color: rgba(194, 164, 102, 0.2);
@@ -205,6 +210,10 @@
 
 [data-theme="dark"] .project-metric {
   background: rgba(37, 40, 48, 0.7);
+}
+
+[data-theme="dark"] .mini-doc-line {
+  background: rgba(126, 184, 208, 0.28);
 }
 
 [data-theme="dark"] .mgti-preview,
@@ -272,6 +281,11 @@ html.theme-transition body {
 
 html {
   scroll-padding-top: 86px;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 body {
@@ -312,6 +326,10 @@ svg {
 ::selection {
   color: #fff;
   background: var(--blue);
+}
+
+[data-theme="dark"] ::selection {
+  color: #1a1d23;
 }
 
 .cursor-glow,
@@ -792,6 +810,7 @@ svg {
 .hero-admin-text {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   line-height: 1.35;
 }
 
@@ -1430,6 +1449,7 @@ svg {
 
 .project-featured-visual,
 .project-card-visual {
+  position: relative;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background:
@@ -1887,7 +1907,10 @@ svg {
     display: none;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0;
-    overflow: hidden;
+    max-height: calc(100dvh - 92px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     border: 1px solid var(--line);
     border-radius: var(--radius);
     background: rgba(255, 253, 248, 0.98);
@@ -1971,6 +1994,10 @@ svg {
     grid-template-columns: 1fr;
   }
 
+  .project-featured-reverse .project-featured-text {
+    order: -1;
+  }
+
   .workflow-steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2012,6 +2039,14 @@ svg {
   }
 
   .hero-name-block {
+    order: 1;
+  }
+
+  .hero-avatar {
+    order: 2;
+  }
+
+  .hero-name-block {
     align-items: center;
   }
 
@@ -2043,6 +2078,17 @@ svg {
 
   .hero-bottom-row {
     flex-direction: column;
+  }
+
+  .hero-admin-card {
+    width: 100%;
+    max-width: 360px;
+    padding-inline: 16px;
+  }
+
+  .hero-admin-text {
+    flex: 1;
+    text-align: left;
   }
 
   .section {
@@ -2098,6 +2144,12 @@ svg {
 
   .contact-draft-form {
     grid-template-columns: 1fr;
+  }
+
+  .contact-draft input,
+  .contact-draft select,
+  .contact-draft textarea {
+    font-size: 16px;
   }
 
   .nav-links a:nth-last-child(-n + 2) {

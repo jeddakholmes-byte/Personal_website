@@ -150,6 +150,9 @@ function initScrollHandlers() {
     }
   }, { passive: true });
 
+  // Set the correct state immediately, including when opening a hash link.
+  update();
+
   // Back-to-top click → smooth scroll
   if (backToTop) {
     backToTop.addEventListener('click', () => {
@@ -212,6 +215,12 @@ function initMobileNav() {
     if (!links.classList.contains('open')) return;
     if (links.contains(e.target) || toggle.contains(e.target)) return;
     setNav(false);
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 920 && links.classList.contains('open')) {
+      setNav(false);
+    }
   });
 }
 
@@ -349,13 +358,18 @@ function initCitationFormat() {
     const rect = btn.getBoundingClientRect();
     const menuWidth = Math.max(176, rect.width);
     const margin = 12;
+    const estimatedHeight = Math.max(menu.scrollHeight, 156);
+    const spaceBelow = window.innerHeight - rect.bottom - margin;
+    const top = spaceBelow >= estimatedHeight
+      ? rect.bottom + 6
+      : Math.max(margin, rect.top - estimatedHeight - 6);
     const left = Math.min(
       Math.max(margin, rect.right - menuWidth),
       window.innerWidth - menuWidth - margin
     );
 
     menu.style.minWidth = `${menuWidth}px`;
-    menu.style.top = `${rect.bottom + 6}px`;
+    menu.style.top = `${top}px`;
     menu.style.left = `${left}px`;
   }
 
@@ -643,8 +657,8 @@ function initCardSpotlight() {
 }
 
 /* --- Theme Switching ---
-   Three-way: system (default), light, dark
-   Preference stored in localStorage key 'theme'
+   Follow the system until the visitor explicitly chooses light or dark.
+   Preference stored in localStorage key 'theme'.
    Values: 'system' | 'light' | 'dark'
    FOUC prevented by inline <script> in <head>       */
 function initTheme() {
@@ -659,6 +673,7 @@ function initTheme() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     if (iconLight) iconLight.style.display = isDark ? 'none' : '';
     if (iconDark) iconDark.style.display = isDark ? '' : 'none';
+    toggle.setAttribute('aria-label', isDark ? '当前为暗色主题，点击切换' : '当前为亮色主题，点击切换');
   }
 
   function applyTheme(theme) {
@@ -670,36 +685,20 @@ function initTheme() {
     setTimeout(() => html.classList.remove('theme-transition'), 220);
   }
 
-  function resolveTheme() {
-    let stored = 'system';
-    try {
-      stored = localStorage.getItem('theme') || 'system';
-    } catch (error) {
-      stored = 'system';
-    }
-    if (stored === 'light') return 'light';
-    if (stored === 'dark')  return 'dark';
-    return mq.matches ? 'dark' : 'light';
-  }
-
-  // Cycle: system → light → dark → system
+  // Every click must cause a visible change. The first click turns the current
+  // system-resolved theme into an explicit preference.
   toggle.addEventListener('click', () => {
-    let current = 'system';
-    try {
-      current = localStorage.getItem('theme') || 'system';
-    } catch (error) {
-      current = 'system';
-    }
-    const next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
     try {
       localStorage.setItem('theme', next);
     } catch (error) {
       // Ignore storage failures; the visible theme still changes for this page.
     }
-    applyTheme(next === 'system' ? (mq.matches ? 'dark' : 'light') : next);
+    applyTheme(next);
   });
 
-  mq.addEventListener('change', () => {
+  const handleSystemThemeChange = () => {
     let stored = 'system';
     try {
       stored = localStorage.getItem('theme') || 'system';
@@ -709,7 +708,13 @@ function initTheme() {
     if (stored === 'system') {
       applyTheme(mq.matches ? 'dark' : 'light');
     }
-  });
+  };
+
+  if (typeof mq.addEventListener === 'function') {
+    mq.addEventListener('change', handleSystemThemeChange);
+  } else if (typeof mq.addListener === 'function') {
+    mq.addListener(handleSystemThemeChange);
+  }
 
   // On load: theme already set by inline <script>. Only sync icon, no re-apply.
   syncIcon();
